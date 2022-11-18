@@ -1,39 +1,23 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
-
-// import useLocalStorage from "../hooks/useLocalStorage"
-
-import { keyStores, ConnectConfig, KeyPair, connect } from "near-api-js";
-import { BrowserLocalStorageKeyStore } from "near-api-js/lib/key_stores";
-
 import Profile from "../components/Profile";
+import { useAppState } from "../components/AppState";
 
 export default function IndexPage() {
-  const [ pubkey, setPubKey ] = useState("")
-  const [ address, setAddress ] = useState("")
+  const { appState } = useAppState()
 
-  useEffect(() => {
-    setPubKey(localStorage.getItem("DEMO_NEAR_PUBKEY") as string)
-    setAddress(localStorage.getItem("DEMO_NEAR_ADDRESS") as string)
-
-    const myKeyStore = new BrowserLocalStorageKeyStore();
-    const keyStoreKeys = myKeyStore.getAccounts("testnet");
-    console.log(keyStoreKeys);
-  }, [])
-  
   return (<>
-      <Head>
-        <title>Figment Demo App</title>
-        <meta
-          name="description"
-          content="Institutional Staking Made Easy with Figment"
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <div className={styles.container}>
+    <Head>
+      <title>Figment Demo App</title>
+      <meta
+        name="description"
+        content="Institutional Staking Made Easy with Figment"
+      />
+      <link rel="icon" href="/favicon.ico" />
+    </Head>
+    <div className={styles.container}>
       <main className={styles.main}>
         <h1 className={styles.title}>
           Stake with <a href="https://figment.io">Figment</a>
@@ -42,20 +26,19 @@ export default function IndexPage() {
         <p className={styles.intro}>Institutional Staking Made Easy!</p>
 
         <div className={styles.grid}>
-
-          {address
-          ? (<Profile
-            accountAddress={address}
-            accountPubKey={false}
-            accountSecret={false}
-          />)
-          : (<Link href="/create-near-account" className={styles.card}>
-          <h2>NEAR Account &rarr;</h2>
-          <p>Create a Testnet NEAR Account to Demo the Staking API</p>
-        </Link>)
-          }
-          
-
+          {appState.account
+            ? (
+              <Profile
+                accountAddress={appState.account}
+                accountPubKey={false}
+                accountSecret={false}
+              />
+            ) : (
+              <Link href="/create-near-account" className={styles.card}>
+                <h2>NEAR Account &rarr;</h2>
+                <p>Create a Testnet NEAR Account to Demo the Staking API</p>
+              </Link>
+            )}
           <Link href="/near-delegate/create-new-flow" className={styles.card}>
             <h2>Stake NEAR &rarr;</h2>
             <p>Explore Figment's Staking API in Real Time</p>
@@ -85,7 +68,7 @@ export default function IndexPage() {
 
       <footer className={styles.footer}>
         <a href="https://docs.figment.io/" target="_blank" rel="noopener noreferrer">
-         Figment Docs
+          Figment Docs
         </a>
         <a href="https://figment.io" target="_blank" rel="noopener noreferrer">
           Figment{" "}
@@ -95,5 +78,5 @@ export default function IndexPage() {
         </a>
       </footer>
     </div>
-    </>);
+  </>);
 }

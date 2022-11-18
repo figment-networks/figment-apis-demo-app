@@ -1,4 +1,4 @@
-import CreateNearFlow from '../../components/CreateNearFlow'
+import CreateNearFlow from '../../components/CreateFlow'
 
 export default function() {
   return (

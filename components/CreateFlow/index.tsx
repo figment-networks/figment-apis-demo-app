@@ -1,32 +1,15 @@
 import Link from "next/link";
-import { FormEvent, useState, useEffect } from "react";
+import { FormEvent } from "react";
 import styles from "/styles/Home.module.css";
 import { useRouter } from 'next/router'
+import { useAppState } from "../AppState";
+import { toTitleCase } from '../../utils';
 
-export default function CreateNearFlow({ route, operation, description }: {route: string, operation: string, description: string}) {
+export default function CreateNearFlow({ route, operation, description }: { route: string, operation: string, description: string }) {
   const router = useRouter()
-
-  const [flowId, setFlowId] = useState("")
-  const [staking, setStaking] = useState("")
-  const [unstaking, setUnstaking] = useState("")
-  const [transfer, setTransfer] = useState("")
-
-  useEffect(() => {
-    if (operation === "staking") {
-      setStaking("true")
-    }
-  
-    if (operation === "unstaking") {
-      setUnstaking("true")
-    }
-  
-    if (operation === "transfer") {
-      setTransfer("true")
-    }
-  }, [operation])
+  const { appState, setAppState } = useAppState()
 
   const handleNextPage = async () => {
-    localStorage.setItem(`DEMO_${operation.toUpperCase()}_FLOW`, flowId)
     router.push(`/${route}/submit-data`)
   }
 
@@ -60,12 +43,8 @@ export default function CreateNearFlow({ route, operation, description }: {route
 
     // Get the response data from server as JSON.
     const result = await response.json();
-    console.log(JSON.stringify(result, null, 2))
-    console.log(result.id)
-    // Set state so we can display the created flow ID.
-    setFlowId("")
-    setFlowId(result.id)
-    console.log(flowId)
+
+    setAppState({ ...appState, flowId: result.id });
   };
   return (
     <div className="container">
@@ -76,13 +55,13 @@ export default function CreateNearFlow({ route, operation, description }: {route
 
         <br /><br />
 
-        When creating a flow with the Staking API, simply pass the Network, Chain Code, Operation and API Version. <br /> 
-        <b>NEAR</b>, <b>Testnet</b>, <b>{operation.toLowerCase().replace(/(?:^|[\s-/])\w/g, function (match) {return match.toUpperCase();})}</b> and <b>v1</b> have been preselected for this demonstration. <br />
+        When creating a flow with the Staking API, simply pass the Network, Chain Code, Operation and API Version. <br />
+        <b>NEAR</b>, <b>Testnet</b>, <b>{toTitleCase(operation)}</b> and <b>v1</b> have been preselected for this demonstration. <br />
         Click <b>Create Flow</b> to continue.
       </p>
 
       <form onSubmit={handleSubmit} method="post">
-        
+
         <label htmlFor="network_code">Network</label>
         <select id="network_code" name="networkCode" required defaultValue="near">
           <option disabled value="avalanche">Avalanche</option>
@@ -102,30 +81,9 @@ export default function CreateNearFlow({ route, operation, description }: {route
 
         <label htmlFor="operation">Operation</label>
         <select id="operation" name="operation" required defaultValue="staking">
-          {staking
-          ? (<>
-            <option value="staking">Staking</option>
-            <option disabled value="unstaking">Unstaking</option>
-            <option disabled value="transfer">Transfer</option>
-          </>)
-          : ""
-          }
-          {unstaking
-          ? (<>
-            <option disabled value="staking">Staking</option>
-            <option value="unstaking">Unstaking</option>
-            <option disabled value="transfer">Transfer</option>
-          </>)
-          : ""
-          }
-          {transfer
-          ? (<>
-            <option disabled value="staking">Staking</option>
-            <option disabled value="unstaking">Unstaking</option>
-            <option value="transfer">Transfer</option>
-          </>)
-          : ""
-          }
+          <option disabled={operation !== 'staking'} value="staking">Staking</option>
+          <option disabled={operation !== 'unstaking'} value="unstaking">Unstaking</option>
+          <option disabled={operation !== 'transfer'} value="transfer">Transfer</option>
         </select>
 
         <label htmlFor="version">Version</label>
@@ -133,21 +91,16 @@ export default function CreateNearFlow({ route, operation, description }: {route
           <option value="v1">v1</option>
         </select>
 
-        <button type="submit">Create Flow</button>
+        <button type="submit" disabled={appState.flowId}>Create Flow</button>
       </form>
-
-      <br /> 
-            {flowId
-              ? `Created flow with ID: ${flowId}`
-              : ""
-            } 
-
-            {flowId
-              ? <button className="nextPage" type="button" onClick={handleNextPage}>Next Step</button>
-              : ""
-            }
-
-            <Link href="/">Return to Main Page</Link>
+      <br />
+      {appState.flowId ? (
+        <>
+          <span>{`Created flow with ID: ${appState.flowId}`}</span>
+          <button className="nextPage" type="button" onClick={handleNextPage}>Next Step</button>
+        </>
+      ) : <></>}
+      <Link href="/">Return to Main Page</Link>
     </div>
   );
 }

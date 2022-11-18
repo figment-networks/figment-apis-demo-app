@@ -1,7 +1,7 @@
-import CreateNearFlow from '../../components/CreateNearFlow'
+import CreateFlow from '../../components/CreateFlow'
 
 export default function() {
   return (
-    <CreateNearFlow route="near-delegate" operation="staking" description="Delegation" />
+    <CreateFlow route="near-delegate" operation="staking" description="Delegation" />
   )
 }

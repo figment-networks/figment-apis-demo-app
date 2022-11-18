@@ -1,44 +1,14 @@
 import Link from "next/link";
-import { FormEvent, useState, useEffect } from "react";
+import { FormEvent, useState } from "react";
 import styles from "../styles/Home.module.css";
-import router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import Image from "next/image";
-
-import { keyStores, ConnectConfig, KeyPair, connect } from "near-api-js";
-import { BrowserLocalStorageKeyStore } from "near-api-js/lib/key_stores";
-
 import Profile from "../components/Profile";
-
-function keyLocalStorage(secret: string, pubkey: string, address: string) {
-  const myKeyStore = new BrowserLocalStorageKeyStore();
-  const keyPair = KeyPair.fromString(secret);
-
-  // setKey will store the keypair in localstorage
-  // as near-api-js:keystore:[account_id.testnet]:testnet
-  myKeyStore.setKey("testnet", address, keyPair);
-
-  // Setting individual items is easier to deal with
-  // for demo purposes
-  localStorage.setItem("DEMO_NEAR_SECRET", secret)
-  localStorage.setItem("DEMO_NEAR_PUBKEY", pubkey)
-  localStorage.setItem("DEMO_NEAR_ADDRESS", address)
-
-  const regex = /near-api-js:keystore:/;
-
-  console.log(myKeyStore);
-  const keys = Object.keys(localStorage).flatMap((k) => {
-    if (regex.test(k) === true) {
-      console.log(k);
-      return k;
-    }
-  });
-  console.log(keys);
-}
+import { useAppState } from "../components/AppState";
 
 export default function CreateNEARAccountPage() {
-  const [accountSecret, setAccountSecret] = useState("");
-  const [accountPubKey, setAccountPubKey] = useState("");
-  const [accountAddress, setAccountAddress] = useState("");
+  const router = useRouter()
+  const { appState, setAppState } = useAppState()
   const [isLoading, setIsLoading] = useState(false);
 
   const handleNextPage = async () => {
@@ -47,12 +17,6 @@ export default function CreateNEARAccountPage() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-
-    // const form = event.target as HTMLFormElement;
-    // const data = {
-    //   account_name: form.account_name.value as string
-    // }
-
     setIsLoading(true);
     const response = await fetch("/api/near-create-account", {
       headers: {
@@ -61,12 +25,17 @@ export default function CreateNEARAccountPage() {
       method: "POST",
     });
 
-    const {secret, pubkey, account} = await response.json();
-    setAccountSecret(secret);
-    setAccountPubKey(pubkey);
-    setAccountAddress(account);
+    const { secret, pubkey, account } = await response.json();
+    setAppState({
+      ...appState,
+      secret,
+      pubkey,
+      account,
+    })
+
+    setTimeout(() => console.log(appState))
+
     setIsLoading(false);
-    keyLocalStorage(secret, pubkey, account);
   };
 
   return (
@@ -75,15 +44,15 @@ export default function CreateNEARAccountPage() {
         <h1 className={styles.title}>Create a NEAR .testnet account</h1>
 
         <p className={styles.description}>
-          {!accountAddress ? (
+          {!appState.account ? (
             `Click the Create Account button to generate a random keypair and testnet account name, 
             which is only intended for use with this demo of Figment's Staking API.`
           ) : ""
           }
         </p>
           <form onSubmit={handleSubmit} method="post">
-            {accountAddress ? (
-              <b>Your testnet address for this demo is {accountAddress}</b>
+            {appState.account ? (
+              <b>Your testnet address for this demo is {appState.account}</b>
             ) : (
               <button type="submit" disabled={isLoading ? true : false}>
                 Create Account
@@ -100,11 +69,11 @@ export default function CreateNEARAccountPage() {
 
         {isLoading ? "Loading..." : ""}
 
-        {accountPubKey ? (<>
+        {appState.pubkey ? (<>
           <Profile
-            accountPubKey={accountPubKey}
-            accountSecret={accountSecret}
-            accountAddress={accountAddress}
+            accountPubKey={appState.pubkey}
+            accountSecret={appState.secret}
+            accountAddress={appState.account}
           />
           <button className="nextPage" type="button" onClick={handleNextPage}>
             Stake NEAR on testnet

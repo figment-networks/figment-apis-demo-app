@@ -173,9 +173,17 @@ button:hover {
   border-radius: 24px;
   margin-bottom: 25px;
   border-color: #C7E0E7;
-  border-width: 2px;
+  border-width: 3px;
+  margin: 1em; 
   border-style: solid;
 }
+
+.profile:hover,
+.profile:focus,
+.profile:active {
+  border-color: #034D76;
+}
+
 
 h3.address {
   text-align: left;
@@ -305,4 +313,9 @@ h1.tutorial-title {
 /* Used by the ErrorBoundary component */
 .errorButton {
   width: 25%
+}
+
+button:disabled {
+  cursor: default;
+  background-color: rgb(197, 197, 197);
 }
