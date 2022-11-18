@@ -1,0 +1,297 @@
+---
+title: Integrating with Figment's Staking API
+prev_page: 1_introduction
+next_page: 3_payload-signing
+---
+
+There is no limit to how you might integrate Figment's APIs into your use case or application. 
+We're here to guide you through what the process looks like with the tech stack we identified in the previous step.
+
+Integrating the Staking API from a backend perspective looks approximately like this:
+
+- Send an HTTP POST request with the correct parameters to the Staking API endpoint &rarr; `https://near-slate.datahub.figment.io/api/v1/flows`
+
+  - Requests must pass an `Authorization` header containing a valid API key &rarr; Check out the Figment Documentation on [Authentication](https://docs.figment.io/quickstart/api-authentication) and [API Key Best Practices](https://docs.figment.io/guides/manage-and-secure-api-keys).
+
+- The response from the Staking API will include a unique flow ID, and indicate which actions are available at that point in the flow
+
+- To continue with a flow, send an HTTP PUT request with the required inputs to `https://near-slate.datahub.figment.io/api/v1/flows/[:flowId]/next`, where `[:flowId]` is the alphanumeric flow identifier
+
+## Server-side Code
+
+In the context of a Next.js application, an [API route](https://nextjs.org/docs/api-routes/introduction) is effectively server-side, not being run by the web client.
+
+In the code example below, we are using `async/await` syntax to perform our fetch request to the Staking API endpoint.
+
+The incoming request body from the client-side is being passed into this function as the parameter `req`, which is of the type `NextApiRequest` (see [docs](https://nextjs.org/docs/basic-features/typescript#api-routes)).
+
+The response is sent back to the client-side as `res`, which is of the type `NextApiResponse`.
+
+You can refer to the implementation of this demo app for details. Check out the file `pages/api/near-delegate/near-flow.ts`.
+
+Remember that this fetch request is being made in the API route, and is distinct from the fetch request being made by the Next.js page.
+
+Let's break down the fetch call to create a new flow with the Staking API:
+
+```js
+export default async function connection(
+    req: NextApiRequest,
+    res: NextApiResponse<string>
+) {
+    const HOSTNAME = "near-slate.datahub.figment.io"
+    const ENDPOINT = "/api/v1/flows"
+    const body = req.body
+    try {
+        const response = await fetch(`https://${HOSTNAME}${ENDPOINT}`, {
+            method: 'POST',
+            headers: {
+                "Authorization" : process.env.API_KEY as string,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "flow": {
+                    "network_code": body.network_code,
+                    "chain_code": body.chain_code,
+                    "operation": body.operation,
+                    "version": body.version
+                }
+            })
+        })
+
+        console.log("Response: ", response)
+
+        if (response.status >= 400) {
+            res.status(200).json(await response.json())
+            throw new Error(`${response.status} response from server - ${JSON.stringify(response.body)}`);
+        }
+
+        if (response.status === 200) {
+            res.status(200).json(await response.json())
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+```
+
+- The HTTP method for this action is `POST`
+
+  - All requests to Figment APIs must include an `Authorization` header, which passes the API key
+
+  - All `POST` requests must include a `Content-Type` header of `application/json`
+
+- The request body is passed as JSON, and contains the specific data needed to initialize a new flow
+
+  - The `network_code` determines which network supported by the Staking API the flow is targeting
+
+  - The `chain_code` determines whether the flow will target mainnet or testnet
+
+  - The `operation` determines the type of flow to initialize, `staking`, `unstaking` or `transfer`
+
+  - The `version` determines which version of the Staking API is being used &mdash; This should always be the most recent version of the API
+
+## Flow Initialized
+
+Once the flow is initialized, the Staking API will send a JSON response. You can see more details about the response body in the Figment Documentation: [Staking API Reference - NEAR](https://docs.figment.io/api-reference/staking-api/near)
+
+It's important to handle errors if they come up, but you may not want to pass along every error message to a user. 
+
+In this implementation, we're specifying that any [HTTP status code](https://docs.figment.io/guides/response-codes-and-error-codes) 400 or above will throw an error on the server console.
+
+The status 200 will be returned to the Next.js application to indicate that the API route completed its task, and the error response is passed back to the client side.
+
+Based on what is returned in the response from the Staking API, you will be able to continue with the flow.
+
+An error message will be returned by the Staking API in cases where you pass incomplete or wrong data.
+
+## Handling Staking API Responses
+
+In every step, the response from the Staking API contains information about the active flow.
+
+- `id` — A string indicating the ID of the flow.
+
+- `state` — A string indicating the current state of the flow.
+
+- `actions` — An array including the name & inputs of the possible actions.
+
+- `data` — An object containing flow & transaction data.
+
+You can use the information in `actions` to create a form to capture the data to input into the flow.
+
+### Client-side Code
+
+Check out the files in the `pages/near-delegate` directory. Each step of the flow is represented.
+
+Let's break down the code used in `pages/near-delegate/submit-data.tsx`:
+
+- The import statements include the basic Next.js and React code needed to operate the page functionality.
+
+```js
+import Link from "next/link";
+import { FormEvent, useState, useEffect } from "react";
+import styles from "/styles/Home.module.css";
+import { useRouter } from 'next/router'
+```
+
+- Next (pardon the pun) we have set up some state variables with the `useState` hook to store information from the flow.
+
+
+```js
+export default function SubmitDelegateDataPage() {
+  const router = useRouter()
+
+  const [transactionPayload, setTransactionPayload] = useState()
+  const [accountPubKey, setAccountPubKey] = useState("")
+  const [accountAddress, setAccountAddress] = useState("")
+  const [flowId, setFlowId] = useState("")
+```
+
+- The `useEffect` hook is useful for setting the values of our state variables.
+
+```js
+  // Get the Public Key, Address and Current Flow ID from localStorage
+  useEffect(() => {
+    setAccountPubKey(localStorage.getItem('DEMO_NEAR_PUBKEY') as string)
+    setAccountAddress(localStorage.getItem('DEMO_NEAR_ADDRESS') as string)
+    setFlowId(localStorage.getItem('DEMO_STAKING_FLOW') as string)
+    console.log(flowId)
+  }, [])
+```
+
+- The `handleNextPage` function helps us to navigate to the next step in the flow, where we will sign a transaction payload. This is used within the `return` function below.
+
+```js
+  const handleNextPage = async () => {
+    router.push("/near-delegate/sign-payload")
+  }
+```
+
+- The `handleSubmit` function is where we deal with the user having clicked a button to perform an action on the frontend. 
+In this case, we want to perform the fetch request to the Staking API and then do something with the response by storing the unsigned transaction payload.
+
+```js
+  const handleSubmit = async (event: FormEvent) => {
+    // Handle the submit event on form submit.
+    // Stop the form from submitting and refreshing the page.
+    event.preventDefault();
+
+    // Cast the event target to an html form
+    const form = event.target as HTMLFormElement;
+
+    // Get data from the form.
+    const data = {
+      flow_id: flowId as string,
+      action: form.flowAction.value as string,
+      delegator_address: form.delegator_address.value as string,
+      delegator_pubkey: form.delegator_pubkey.value as string,
+      validator_address: form.validator_address.value as string,
+      amount: form.amount.value as number,
+      max_gas: form.max_gas.value as string
+    }
+
+    const response = await fetch("/api/near-delegate/near-submit-delegate-data", {
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+    });
+
+    const result = await response.json();
+
+    console.log(result)
+
+    if (result.code) {
+      alert(`${result.code}: ${result.message}`)
+    }
+
+    if (result.data) {
+      console.log("---------->> RESULT:", result)
+      console.log("raw payload: ", result.data.delegate_transaction.raw)
+      localStorage.setItem('PAYLOAD', result.data.delegate_transaction.raw)
+      // @ts-ignore
+      setTransactionPayload(localStorage.getItem('PAYLOAD'))
+    }
+  };
+```
+
+- The `return` function is where we lay out the page structure, including HTML and CSS. 
+This includes the form used to capture user input and the buttons needed to perfom the actions.
+
+- The form is capturing the inputs to be passed into the flow when proceeding to the next step.
+
+- Each network supported by the Staking API will require similar, but different inputs.
+It is important to be aware that public/private keys and account addresses in particular will differ from network to network.
+
+```js
+  return (
+    <div className="container">
+      <h1 className={styles.title}>Submit Delegation Data to the Staking API</h1>
+
+      <p className={styles.description}>
+        In this step, we'll submit the delegation data which includes the <b>Delegator Address</b>,
+        <b>Delegator Pubkey</b>, <b>Validator Address</b> and <b>Amount</b> of NEAR to delegate.
+      <br /><br />
+      Current Flow ID: <b>{flowId}</b>
+      </p>
+
+      <form onSubmit={handleSubmit} method="post">
+        
+        <label htmlFor="action">Action:</label>
+        <select id="action" name="flowAction" required defaultValue="create_delegate_tx">
+          <option value="create_delegate_tx">create_delegate_tx</option>
+        </select>
+
+        <label htmlFor="delegator_address">Delegator Address (including <b>.testnet</b>)</label>
+        <input type="text" id="delegator_address" name="delegator_address" defaultValue={accountAddress} />
+
+        <label htmlFor="delegator_pubkey">Delegator Public Key (ECDSA prefix <code><b>ed25519:</b></code>)</label>
+        <input type="text" id="delegator_pubkey" name="delegator_pubkey" defaultValue={accountPubKey} />
+
+        <label htmlFor="validator_address">Validator Address (select a NEAR testnet validator)</label>
+        <select id="validator_address" name="validator_address" required defaultValue="v1">
+          <option value="01node.pool.f863973.m0">01node.pool.f863973.m0</option>
+          <option value="aurora.pool.f863973.m0">aurora.pool.f863973.m0</option>
+        </select>
+
+        <label htmlFor="amount">Amount</label>
+        <input type="text" id="amount" name="amount" defaultValue="10.0" />
+
+        <label htmlFor="max_gas">Max Gas (optional)</label>
+        <input type="text" id="max_gas" name="max_gas" defaultValue="" />
+
+        <button type="submit">Submit Delegation Data</button>
+      </form>
+
+      <p> Transaction Payload to Sign (click to copy) </p>
+
+      <br /> 
+
+            {transactionPayload
+              ? (<>
+                  <div className="payload" onClick={() => navigator.clipboard.writeText(transactionPayload)}>
+                    {transactionPayload}
+                  </div>
+                  <button className="nextPage" type="button" onClick={handleNextPage}>Next Step</button>
+                </>)
+              : ""
+            } 
+
+            <Link href="/">Return to Main Page</Link>
+
+    </div>
+  );
+}
+```
+
+- Wherever you see the ternary operator (`condition ? true : false`) used in the context of a React page, this is called conditional rendering.
+ 
+  - If the condition evaluates to true, the value after the question mark is returned.
+  
+  - If the condition evaluates to false, the value after the colon is returned.
+
+## Next Steps
+
+So far, we have created a delegation flow and passed form values as inputs to the flow.
+
+Next, we can sign the transaction payload returned by the Staking API.

@@ -1,0 +1,308 @@
+@font-face {
+  font-family: "Jungka";
+  font-weight: normal;
+  src: url("../fonts/Jungka/Jungka-Book.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Jungka";
+  font-weight: bold;
+  src: url("../fonts/Jungka/Jungka-Medium.otf") format("opentype");
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-size: 1.075rem;
+  line-height: 1.55rem;
+  font-family: "Jungka", -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  background-color: #F6F8FB;
+}
+
+p > code,
+li > code,
+dd > code,
+td > code {
+  background: #3b3b3b;
+  word-wrap: break-word;
+  box-decoration-break: clone;
+  padding: .1rem .3rem .2rem;
+  border-radius: .2rem;
+  width: auto;
+}
+
+pre {
+  /* word-wrap: break-word; */
+  border-radius: 8px;
+  padding: 8px;
+  display: block;
+  background-color: #3b3b3b;
+}
+
+code {
+  /* word-wrap: break-word; */
+  background-color: #3b3b3b;
+  color: #fff;
+  border-radius: 8px;
+  line-height: 1.5rem;
+  padding: 5px;
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+form {
+  display: table;
+  min-width: 350px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+label {
+  display: table;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  color: #3b3b3b;
+}
+
+input {
+  display: table;
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+}
+
+input:focus {
+  outline: none;
+  border-color: #034D76;
+}
+
+select {
+  display: table;
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+}
+
+select:focus {
+  outline: none;
+  border-color: #034D76;
+}
+
+button {
+  display: table;
+  width: 100%;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 0.25rem;
+  box-sizing: border-box;
+  margin-bottom: 1.5rem;
+  background-color: #034D76;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #034D76;
+}
+
+.nextPage {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 0.25rem;
+  box-sizing: border-box;
+  margin-bottom: 2.5rem;
+  margin-top: 1.5rem;
+  background-color: #034D76;
+  color: #fff;
+  cursor: pointer;
+  align-items: center;
+  text-align: center;
+  width: auto;
+}
+
+.blur {
+  color: transparent;
+   text-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+.blur:hover {
+  color: #000;
+  text-shadow: 0 2 1px 0px #000;
+}
+
+.container {
+  position: relative;
+  min-height: 100vh;
+  padding: 0 0.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  width: 100%;
+  /* display: block; */
+}
+
+.profile {
+  /* position: absolute; */
+  left: 10px;
+  top: 10px;
+  float: left;
+  min-height: auto;
+  max-height: auto;
+  width: auto;
+  padding: 1rem;
+  background-color: rgba(255,255,255,1.0);
+  border-radius: 24px;
+  margin-bottom: 25px;
+  border-color: #C7E0E7;
+  border-width: 2px;
+  border-style: solid;
+}
+
+h3.address {
+  text-align: left;
+  padding: 0.5rem;
+}
+
+h3.pubkey {
+  text-align: left;
+  padding: 0.5rem;
+}
+
+p.secret {
+  word-wrap: break-word;
+  color: transparent;
+  text-shadow: 0 0 6px rgba(0,0,0,0.75);
+  background-color: rgba(100,100,100,0.5);
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: medium;
+  text-align: center;
+}
+
+p.secret:hover {
+  color: #000;
+  text-shadow: 0 2 1px 0px #000;
+  background-color: rgba(100,0,0,0.5);
+}
+
+.ext_link {
+  text-decoration: underline;
+}
+
+.inline_image {
+  border-radius: 4px;
+  box-shadow: -10px 10px 20px grey;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+
+.tutorial_inline_image {
+  /* border-radius: 4px;
+  box-shadow: -10px 10px 20px grey; */
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  margin-left: 50px;
+  display: inline-block;
+}
+
+
+.payload {
+  background-color: rgba(100,100,100,0.5);
+  border-radius: 6px;
+  width: 400px;
+  display: inline-block;
+  padding: 10px;
+  word-wrap: break-word;
+  text-align: center;
+  font-weight: bold;
+}
+
+.txn-search {
+  background-color: rgba(100,100,100,0.5);
+  border-radius: 6px;
+  max-width: 50%;
+  max-height: 300px;
+  display: inline-block;
+  padding: 10px;
+  word-wrap: break-word;
+  font-weight: bold;
+  overflow: scroll
+}
+
+.tutorial-container {
+  /* display: inline-block; */
+  border-radius: 24px;
+  border-style: solid;
+  border-width: 3px;
+  border-color: #C7E0E7;
+  padding: 1rem;
+  top: 20px;
+  margin: 25px auto;
+  width: 75%;
+  background-color: #FFFFFF;
+}
+
+h1.tutorial-title {
+  text-align: justify;
+  color: #034D76;
+}
+
+.tutorial-content {
+  margin: auto;
+  text-align: justify;
+  padding-left: 1.5rem;
+  padding-bottom: 4rem;
+  margin-bottom: 4rem;
+  background-color: #F6F8FB;
+}
+
+.tutorialFooter {
+  display: block;
+  text-align: center;
+  padding: 10px;
+  margin-top: 2.5rem;
+}
+
+.prevPageLink {
+  padding: 5px;
+  text-align: justify;
+  background-color: #FFFFFF; 
+}
+
+.nextPageLink {
+  padding: 5px;
+  text-align: justify;
+  background-color: #FFFFFF;
+}
+
+.homePageLink {
+  text-align: center;
+  margin: auto;
+  padding: 5px;
+  text-align: justify;
+  background-color: #FFFFFF;
+}
+
+/* Used by the ErrorBoundary component */
+.errorButton {
+  width: 25%
+}
