@@ -39,6 +39,7 @@ pre {
   padding: 8px;
   display: block;
   background-color: #3b3b3b;
+  white-space: pre-wrap;
 }
 
 code {
