@@ -6,28 +6,28 @@ next_page: 1_introduction
 
 This Demo App is structured as follows:
 
-- `components` contains some React components used in the app
+- `/components` contains React components specific to each part of a Staking API flow
 
-- `fonts` contains licensed fonts used by Figment
+- `/fonts` contains licensed fonts used by Figment
 
-- `pages` contains the client-side pages shown by the app
+- `/pages` contains the client-side pages shown by the app (client-side)
 
-- `pages/api` contains the Next.js API routes used by the app
+- `/pages/api` contains the Next.js API routes used by the app (server-side)
 
-- `pages/near-delegate`, `pages/near-undelegate` and `pages/near-transfer` contain the client-side pages used in each Staking API flow
+- `/pages/near-delegate`, `/pages/near-undelegate` and `/pages/near-transfer` contain the client-side pages used in each Staking API flow. These will use the components defined in `/components`
 
-- `pages/tutorial/[doc].tsx` contains the code used to display Markdown (MDX) files for this Demo App Tutorial
+- `/pages/tutorial/[doc].tsx` contains the code used to display Markdown (MDX) files for this Demo App Tutorial
 
-- `pages/create-near-account.tsx` is the page used to create a new, randomly named NEAR account on testnet
+- `/pages/create-near-account.tsx` is the page used to create a new, randomly named NEAR account on testnet
 
-- `public` contains the images and non-text content used in the Demo App
+- `/public` contains the images used in the Demo App
 
-- `styles` contains the CSS used to style the Demo App
+- `/styles` contains the CSS used to style the Demo App
 
-- `tutorial` contains the Demo App Tutorial content in Markdown format
+- `/tutorial` contains the Demo App Tutorial content in Markdown format
 
-- `.env` contains the Figment API key used to access the Staking API
+- `.env-example` must be renamed to `.env` and should contain the Figment API key used to access the Staking API (do this before running the Demo App)
 
-- `.gitignore` lists files which should be ignored by git &mdash; it's imperative that `.env` always be listed in this file to prevent API keys being leaked.
+- `.gitignore` lists files which should be ignored by git &mdash; it's imperative that `.env` always be listed in this file to prevent API keys being leaked
 
 - In addition to the project manifest file `package.json`, the remaining files in the project root directory are used for configuration of TypeScript and Next.js
