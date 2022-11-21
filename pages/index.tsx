@@ -45,21 +45,6 @@ export default function IndexPage() {
             <p>Explore Figment's Staking API in Real Time</p>
           </Link>
 
-          <Link href="/near-undelegate/create-new-flow" className={styles.card}>
-            <h2>Unstake NEAR &rarr;</h2>
-            <p>Explore Figment's Staking API in Real Time</p>
-          </Link>
-
-          <Link href="/near-transfer/create-new-flow" className={styles.card}>
-            <h2>Transfer NEAR &rarr;</h2>
-            <p>Explore Figment's Staking API in Real Time</p>
-          </Link>
-
-          <Link href="/transaction-search" className={styles.card}>
-            <h2>Search Transaction &rarr;</h2>
-            <p>Search Transaction Using Figment's Node API in Real Time</p>
-          </Link>
-
           <Link href="/tutorial/0_structure" className={styles.card}>
             <h2>Integration Tutorial &rarr;</h2>
             <p>Learn how to integrate Figment's Staking API with your product</p>
