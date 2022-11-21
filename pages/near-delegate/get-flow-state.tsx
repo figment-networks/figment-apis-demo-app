@@ -2,7 +2,7 @@ import Link from "next/link";
 import { FormEvent, useState, useEffect } from "react";
 import styles from "/styles/Home.module.css";
 import { useRouter } from "next/router";
-import { useAppState } from "../AppState";
+import { useAppState } from "../../components/AppState";
 
 export default function PageWithJSbasedForm() {
   const router = useRouter();
@@ -113,6 +113,11 @@ export default function PageWithJSbasedForm() {
       ) : (
         <></>
       )}
+
+    <Link rel="noopener noreferrer" target="_blank" href="/tutorial/5_get-state">View the tutorial</Link>
+
+    <Link href="/">Return to Main Page</Link>
+
     </div>
   );
 }

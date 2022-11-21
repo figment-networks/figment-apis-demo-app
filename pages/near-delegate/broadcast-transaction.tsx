@@ -1,7 +1,8 @@
 import { FormEvent, useState } from "react";
 import styles from "/styles/Home.module.css";
 import { useRouter } from 'next/router'
-import { useAppState } from "../AppState";
+import { useAppState } from "../../components/AppState";
+import Link from "next/link";
 
 export default function BroadcastTx() {
   const router = useRouter()
@@ -87,6 +88,12 @@ export default function BroadcastTx() {
           <button className="nextPage" type="button" onClick={handleNextPage}>Next Step</button>
         </>
       ) : <></>}
+
+      <Link rel="noopener noreferrer" target="_blank" href="/tutorial/4_broadcasting">View the tutorial</Link>
+
+      <Link href="/">Return to Main Page</Link>
+
+
     </div>
   </>);
 }

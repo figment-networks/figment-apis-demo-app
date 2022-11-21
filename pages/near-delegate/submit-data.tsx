@@ -35,7 +35,6 @@ export default function SubmitData() {
       delegator_pubkey: form.delegator_pubkey.value as string,
       validator_address: form.validator_address.value as string,
       amount: form.amount.value as number,
-      max_gas: form.max_gas.value as string,
     };
 
     const response = await fetch(`/api/near-delegate/near-submit-delegate-data`, {
@@ -173,6 +172,9 @@ export default function SubmitData() {
       ) : (
         <></>
       )}
+
+      <Link rel="noopener noreferrer" target="_blank" href="/tutorial/2_submit-data">View the tutorial</Link>
+
       <Link href="/">Return to Main Page</Link>
     </div>
   );

@@ -140,6 +140,9 @@ export default function CreateNearFlow() {
       ) : (
         <></>
       )}
+
+      <Link rel="noopener noreferrer" target="_blank" href="/tutorial/1_integration">View the tutorial</Link>
+
       <Link href="/">Return to Main Page</Link>
     </div>
   );

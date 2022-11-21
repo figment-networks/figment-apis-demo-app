@@ -33,10 +33,11 @@ export async function getStaticPaths() {
         paths: [
             { params: { doc: '1_integration' } },
             { params: { doc: '2_submit-data' } },
-            { params: { doc: '3_payload-signing' } },
+            { params: { doc: '3_sign-payload' } },
             { params: { doc: '4_broadcasting' } },
-            { params: { doc: '5_wrapping-up' } },
-            { params: { doc: '6_recap' } },
+            { params: { doc: '5_get-state' } },
+            { params: { doc: '6_wrapping-up' } },
+            { params: { doc: '7_recap' } },
         ],
         fallback: false,
     }

@@ -29,7 +29,6 @@ export default async function connection(
           delegator_pubkey: body.delegator_pubkey,
           validator_address: body.validator_address,
           amount: body.amount,
-          max_gas: body.max_gas,
         },
       }),
     });
