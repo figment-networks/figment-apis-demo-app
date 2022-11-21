@@ -27,3 +27,9 @@ const data = {
 - Each property is assigned from the form field, so for example `form.delegator_address.value` refers to the value contained in the text input at the time the form is submitted.
 - You'll notice we're holding the flow ID in the `appState`, it's important to ensure you're acting on the same flow by referencing its flow ID
 - The "as string" or "as number" here is TypeScript, which is being used to ensure we're passing the correct type of data to avoid validation errors
+
+## Next Steps
+
+So far, we have initialized a flow and supplied the data needed to continue the flow.
+
+Next, we can sign the transaction payload that was returned in the Staking API response.
