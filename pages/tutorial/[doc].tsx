@@ -31,12 +31,12 @@ export default function TutorialPage({ mdxSource }: { mdxSource: any}) {
 export async function getStaticPaths() {
     return {
         paths: [
-            { params: { doc: '0_structure' } },
-            { params: { doc: '1_introduction' } },
-            { params: { doc: '2_integration' } },
+            { params: { doc: '1_integration' } },
+            { params: { doc: '2_submit-data' } },
             { params: { doc: '3_payload-signing' } },
-            { params: { doc: '4_frontend' } },
+            { params: { doc: '4_broadcasting' } },
             { params: { doc: '5_wrapping-up' } },
+            { params: { doc: '6_recap' } },
         ],
         fallback: false,
     }

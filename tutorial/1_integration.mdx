@@ -1,0 +1,129 @@
+---
+title: Integrating with Figment's Staking API
+prev_page: 6_recap
+next_page: 2_submit-data
+---
+
+{/* <Link href="" rel="noopener noreferrer" target="_blank"> </Link> */}
+
+This tutorial focuses on using the Staking API with the NEAR Protocol.
+
+You will see the terms "staking" and "delegation" used throughout this tutorial. To avoid confusion, the act of **delegating** tokens to a validator is known as **staking**.
+
+Other networks that are supported by the Staking API are shown on the <Link href="https://docs.figment.io/api-reference/" rel="noopener noreferrer" target="_blank">API Reference table</Link>.
+
+If you have any questions about how to access the Staking API, check out the quickstart on <Link href="https://docs.figment.io/quickstart/api-authentication" rel="noopener noreferrer" target="_blank">Authentication</Link> and <Link href="https://docs.figment.io/guides/manage-and-secure-api-keys" rel="noopener noreferrer" target="_blank">API Key Best Practices</Link>
+
+When integrating with the Staking API, consider the following:
+
+1. Initialize a new Staking API flow by sending an HTTP POST request with the correct parameters to the Staking API endpoint &rarr; `https://near-slate.datahub.figment.io/api/v1/flows`.
+
+2. The response from the Staking API will include a unique flow ID, and indicate which actions are available at that point in the flow.
+
+3. To continue with a flow, send an HTTP PUT request with the required inputs to `https://near-slate.datahub.figment.io/api/v1/flows/[:flowId]/next`, where `[:flowId]` is the alphanumeric flow identifier.
+  - For example: `https://near-slate.datahub.figment.io/api/v1/flows/2fdfccac-ca61-4b10-973b-4252567fe019/next`
+
+This process is explained in the guide: <Link href="https://docs.figment.io/guides/staking-api/working-with-staking-api-flows">Working with Staking API Flows</Link>.
+
+## Server-side Code
+
+In the context of a Next.js application, an [API route](https://nextjs.org/docs/api-routes/introduction) is executed on the server-side, not by the web client.
+
+In the code example below, we are using `async/await` syntax to perform our fetch request to the Staking API endpoint.
+
+Remember that **this** fetch request to the Staking API is being made in the API route (on the server-side), and is distinct from the fetch request being made by the Next.js page (on the client-side).
+
+Let's break down the `fetch` call to create a new flow with the Staking API:
+
+```js
+export default async function connection(
+    req: NextApiRequest,
+    res: NextApiResponse<string>
+) {
+    const HOSTNAME = "near-slate.datahub.figment.io"
+    const ENDPOINT = "/api/v1/flows"
+    const body = req.body
+    try {
+        const response = await fetch(`https://${HOSTNAME}${ENDPOINT}`, {
+            method: 'POST',
+            headers: {
+                "Authorization" : process.env.API_KEY as string,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "flow": {
+                    "network_code": body.network_code,
+                    "chain_code": body.chain_code,
+                    "operation": body.operation,
+                    "version": body.version
+                }
+            })
+        })
+
+        console.log("Response: ", response)
+
+        if (response.status >= 400) {
+            res.status(200).json(await response.json())
+            throw new Error(`${response.status} response from server - ${JSON.stringify(response.body)}`);
+        }
+
+        if (response.status === 200) {
+            res.status(200).json(await response.json())
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+```
+
+- The HTTP method for this action is `POST`
+
+  - All requests to Figment APIs must include an `Authorization` header, which passes the API key
+
+  - All `POST` requests must include a `Content-Type` header of `application/json`
+
+- The request body (`req.body`) is sent from the client-side as JSON, and contains the parameters needed to initialize a new flow
+
+- These parameters can be hardcoded or collected as form inputs depending on your use case. Check the example in `pages/near-delegate/create-new-flow.tsx`
+
+  - The `network_code` determines which network the flow is targeting (`near`, etc.)
+
+  - The `chain_code` determines whether the flow will target `mainnet` or `testnet`
+
+  - The `operation` determines the type of flow to initialize. For NEAR these are `staking`, `unstaking` or `transfer`
+
+  - The `version` determines which version of the Staking API is being used &mdash; This should always be the most recent version of the API, currently `v1`
+
+## Flow Initialized
+
+Once the flow is initialized, the Staking API will send back a JSON response.
+
+You can see a sample response body in the Figment Documentation: [Staking API Reference - NEAR](https://docs.figment.io/api-reference/staking-api/near)
+
+In this implementation, we're specifying that any [HTTP status code](https://docs.figment.io/guides/response-codes-and-error-codes) 400 or above will throw an error on the server console.
+
+The status code 200 will be returned to the Next.js application to indicate that the API route completed its task, and the error response is passed back to the client side.
+
+Based on what is returned in the response from the Staking API, you will be able to continue with the flow.
+
+An error message will be returned by the Staking API wherever you pass incomplete or wrong data.
+
+## Handling Staking API Responses
+
+In every step, the response from the Staking API contains information about the active flow.
+
+- `id` — A string indicating the ID of the flow.
+
+- `state` — A string indicating the current state of the flow.
+
+- `actions` — An array including the name & inputs of the possible actions.
+
+- `data` — An object containing flow & transaction data.
+
+You can use the information in `actions` to inform how you input data into the flow &mdash; pay attention to the `type` and `validations` fields.
+
+## Next Steps
+
+So far, we have demonstrated passing form values as inputs to the flow and creating a new delegation flow.
+
+Next, we can submit data to the Staking API to continue the flow.

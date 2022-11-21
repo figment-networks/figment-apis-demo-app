@@ -1,16 +1,18 @@
 ---
 title: Payload Signing
-prev_page: 2_integration
-next_page: 4_frontend
+prev_page: 2_submit-data
+next_page: 4_broadcasting
 ---
 
 When signing a transaction payload for the Staking API, there are a few considerations.
 
 1. Every transaction payload can be signed by one or more accounts. Signers are identified by their address in the Staking API responses. The private key of an account identified as a signer must be used to cryptographically sign the payload.
+
 2. Transaction payloads are an encoded form of the inputs being passed to the Staking API for inclusion in a blockchain transaction. Serialized data is easier to transfer.
+
 3. The payloads can be signed offline and provided to the Staking API at a later date. It is also possible to sign using a custodial solution such as the <Link href="https://fireblocks.io" rel="noopener noreferrer" target="_blank">Fireblocks API</Link>, check out our guide on [Signing Transactions with the Fireblocks API](https://docs.figment.io/guides/staking-api/fireblocks-signing-transactions) .
+
 4. In the case of this demo app, the transaction payloads are signed using the `@figmentio/slate` npm package, and the account/private key created by the demo app. 
-This is a demonstration of how the slate package simplifies transaction signing. 
 For more information, check out our guide on <Link href="https://docs.figment.io/guides/staking-api/figment-signing-transactions" rel="noopener noreferrer" target="_blank">Signing Payloads with Figment's npm package</Link>.
 
 Let's break down the code being used for the signature, in `pages/api/near-delegate/near-sign-payload.ts`:
@@ -45,10 +47,17 @@ export default async function connection(
 }
 ```
 
-- The incoming request body contains the unsigned transaction payload and the private key being used to sign it.
+- The incoming request body (`req.body`) should contain the unsigned transaction payload and the private key being used to sign it.
 
-- It's important to point out here that at a minimum, it would be optimal for this action to occur entirely offline. Preferably on a well secured system, and using some kind of encrypted secrets vault such as [Hashicorp's Vault](https://www.vaultproject.io/). Once again, entirely for the purposes of this demo, we have chosen to greatly simplify this process to facilitate learning.
+- It's important to point out that in production, it would be optimal for this action to occur entirely offline. 
+Preferably on a well secured system, and using some kind of encrypted secrets vault such as [Hashicorp's Vault](https://www.vaultproject.io/).
 
-- The main takeaway here is that the transaction payload is being signed by the appropriate private key, and can then be passed to the Staking API to complete the flow.
+- The transaction payload is being signed by the appropriate private key &mdash; The signed payload can then be passed to the Staking API to complete the flow
 
-- In the code above, once the payload is signed is is returned to the client-side as JSON.
+- In the code above, once the payload is signed it is returned to the client-side as a JSON formatted string
+
+## Next Steps
+
+So far, we have initialized a delegation flow, provided the necessary inputs and signed the raw transaction payload. 
+
+Next, we can provide the signed transaction payload to the Staking API to be broadcast to the NEAR network.

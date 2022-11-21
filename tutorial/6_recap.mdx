@@ -1,8 +1,10 @@
 ---
-title: Introduction
-prev_page: 0_structure
-next_page: 2_integration
+title: Recap (Optional)
+prev_page: 5_wrapping-up
+next_page: 1_integration
 ---
+
+{/* Hey Daniel, this page is optional! It was originally the intro, but let us know what you think about including any of this info. */}
 
 Welcome to the Figment Staking API Demo App!
 
@@ -40,15 +42,46 @@ To complete this tutorial, you will need the following:
 - A code editor, we recommend <Link href="https://code.visualstudio.com" rel="noopener noreferrer" target="_blank">Visual Studio Code</Link>
 - Working knowledge of <Link href="https://www.javascript.com" rel="noopener noreferrer" target="_blank">JavaScript</Link> / <Link href="https://www.typescriptlang.org" rel="noopener noreferrer" target="_blank">TypeScript</Link> &mdash; TS has a minimal impact on the code scaffolded by Next.js and does not interfere with, nor is it required by the Figment Staking API.
 
+
+## Demo App Structure
+
+This Demo App is structured as follows:
+
+- `/components` contains React components specific to each part of a Staking API flow
+
+- `/fonts` contains licensed fonts used by Figment
+
+- `/pages` contains the client-side pages shown by the app (client-side)
+
+- `/pages/api` contains the Next.js API routes used by the app (server-side)
+
+- `/pages/near-delegate`, `/pages/near-undelegate` and `/pages/near-transfer` contain the client-side pages used in each Staking API flow. These will use the components defined in `/components`
+
+- `/pages/tutorial/[doc].tsx` contains the code used to display Markdown (MDX) files for this Demo App Tutorial
+
+- `/pages/create-near-account.tsx` is the page used to create a new, randomly named NEAR account on testnet
+
+- `/public` contains the images used in the Demo App
+
+- `/styles` contains the CSS used to style the Demo App
+
+- `/tutorial` contains the Demo App Tutorial content in Markdown format
+
+- `.env-example` must be renamed to `.env` and should contain the Figment API key used to access the Staking API (do this before running the Demo App)
+
+- `.gitignore` lists files which should be ignored by git &mdash; it's imperative that `.env` always be listed in this file to prevent API keys being leaked
+
+- In addition to the project manifest file `package.json`, the remaining files in the project root directory are used for configuration of TypeScript and Next.js
+
 ## Milestones
 
 In the following steps we will describe how to recreate the Delegation flow from this demo app.
 Generally, this will cover how to integrate the Figment Universal Staking API into a full stack application.
 With a little bit of study, you can extrapolate the needed learnings for both frontend and backend from the demo app and this tutorial.
 
-The first milestone is having a working connection with the Staking API.
+The first milestone is having a working connection with the Staking API. This requires a Figment API key.
 
-The second milestone is being able to complete an entire Staking API delegation flow.
+The second milestone is being able to complete an entire Staking API delegation flow. This requires some understanding of the Staking API flows.
 
 The final milestone is being able to control the process of working with the Staking API, and store state for existing Staking API flows that you have created.
 
@@ -78,9 +111,15 @@ When it is necessary to sign a transaction payload using a keypair, we will use 
 We've provided a page which can generate fresh NEAR testnet accounts with a random alphanumeric identifier. 
 These accounts are meant for use in development, and to rapidly demonstrate the usage of the Staking API.
 
+- Wherever you see the ternary operator (`condition ? true : false`) used in the context of a React page, this is called conditional rendering.
+ 
+  - If the condition evaluates to true, the value after the question mark is returned.
+  
+  - If the condition evaluates to false, the value after the colon is returned.
+
 ## Private Keys Disclaimer
 
-The code in `pages/create-near-account.tsx` creates a randomly generated account name, and the private key for this account is kept in the local storage of your web browser.
+The code in `pages/create-near-account.tsx` creates a randomly generated account name, and the private key for this account is kept in the application state of this demo app.
 
 This is _only_ meant to provide a seamless experience for the demo.
 

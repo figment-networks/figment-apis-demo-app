@@ -45,7 +45,7 @@ export default function IndexPage() {
             <p>Explore Figment's Staking API in Real Time</p>
           </Link>
 
-          <Link href="/tutorial/0_structure" className={styles.card}>
+          <Link href="/tutorial/1_integration" className={styles.card}>
             <h2>Integration Tutorial &rarr;</h2>
             <p>Learn how to integrate Figment's Staking API with your product</p>
           </Link>

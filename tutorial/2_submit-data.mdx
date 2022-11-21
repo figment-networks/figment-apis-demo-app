@@ -1,0 +1,29 @@
+---
+title: Submit Data to the Staking API
+prev_page: 1_integration
+next_page: 3_payload-signing
+---
+
+Once a flow has been initialized, the next step is to submit the necessary data to continue that flow.
+
+In the case of a delegation flow, we need to pass the parameters for the account the delegated NEAR tokens are coming from, the validator the tokens will be delegated to, and the amount of tokens to delegate.
+
+In the file `pages/near-delegate/submit-data.tsx` you will find the form used to collect the data for the flow.
+
+When the form is submitted, the data is collected into an object which can then be passed to the API route and in turn to the Staking API.
+
+```js
+const data = {
+    flow_id: appState.flowId as string,
+    action: form.flowAction.value as string,
+    delegator_address: form.delegator_address.value as string,
+    delegator_pubkey: form.delegator_pubkey.value as string,
+    validator_address: form.validator_address.value as string,
+    amount: form.amount.value as number,
+    max_gas: form.max_gas.value as string,
+};
+```
+
+- Each property is assigned from the form field, so for example `form.delegator_address.value` refers to the value contained in the text input at the time the form is submitted.
+- You'll notice we're holding the flow ID in the `appState`, it's important to ensure you're acting on the same flow by referencing its flow ID
+- The "as string" or "as number" here is TypeScript, which is being used to ensure we're passing the correct type of data to avoid validation errors
