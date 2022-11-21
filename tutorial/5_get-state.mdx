@@ -11,3 +11,7 @@ To check the flow state manually, send a GET request to the endpoint `https://ne
 - When the state changes to `delegated`, the transaction has been conformed on the blockchain and the delegation flow is complete.
 
 Check the code in `pages/api/near-delegate/get-flow-state.ts` to see the fetch request in action. Remember that GET requests don't need a `Content-Type` header, because there is no request body.
+
+## Next Steps
+
+So far, we have completed the Staking API flow and now we just need to check that the delegation is complete and has been confirmed on-chain.
