@@ -29,6 +29,7 @@ export default function IndexPage() {
           {appState.account
             ? (
               <Profile
+                className="card"
                 accountAddress={appState.account}
                 accountPubKey={false}
                 accountSecret={false}
