@@ -6,6 +6,7 @@ import { useAppState } from "../AppState";
 
 export default function PageWithJSbasedForm({ route, operation, description }: { route: string, operation: string, description: string }) {
   const router = useRouter()
+  // @ts-ignore
   const { appState, setAppState } = useAppState()
   const [ flowState, setFlowState ] = useState()
   const [ signedTx, setSignedTx ] = useState('')
@@ -52,7 +53,7 @@ export default function PageWithJSbasedForm({ route, operation, description }: {
   };
   return (<>
     <div className="container">
-      <h1 className={styles.title}>Submit Signed Delegate Transaction for Broadcast</h1>
+      <h1 className={styles.title}>Submit Signed {description} Transaction for Broadcast</h1>
 
       <p className={styles.description}>
         After signing the transaction, provide the signed <code>transaction_payload</code>. The Staking API will broadcast the transaction to the NEAR network.

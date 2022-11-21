@@ -1,8 +1,8 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, Context, useState } from 'react';
 
-const AppStateContext = createContext();
+const AppStateContext = createContext({});
 
-export function AppStateProvider({ children }) {
+export function AppStateProvider({ children }: { children: any }) {
     const [ appState, setAppState ] = useState({
         flowId: null,
         account: null,
@@ -22,5 +22,5 @@ export function AppStateProvider({ children }) {
 }
 
 export function useAppState() {
-    return useContext(AppStateContext);
+    return useContext(AppStateContext as Context<{}>);
 }

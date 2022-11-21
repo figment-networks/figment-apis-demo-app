@@ -21,7 +21,7 @@ export default function PageWithJSbasedForm() {
   }, [])
 
   const handleNextPage = async () => {
-    router.push("/near-transfer/get-flow-status")
+    router.push("/near-transfer/get-flow-state")
   }
 
   const handleSubmit = async (event: FormEvent) => {

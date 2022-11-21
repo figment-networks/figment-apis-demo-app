@@ -20,6 +20,7 @@ export default async function connection(
     });
 
     if (response.status >= 400) {
+      res.status(200).json(await response.json());
       throw new Error(
         `${response.status} response from server - ${JSON.stringify(
           response.body,

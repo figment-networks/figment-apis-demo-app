@@ -11,7 +11,7 @@ export default function PageWithJSbasedForm() {
 
   const [flowStatus, setFlowStatus] = useState("");
   const [estimatedChange, setEstimatedChange] = useState ("");
-  const [isLoading, setIsLoading] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
 
   const handleNextPage = async () => {

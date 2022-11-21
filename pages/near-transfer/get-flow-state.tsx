@@ -9,7 +9,7 @@ export default function PageWithJSbasedForm() {
   let flow_status;
 
   const [flowStatus, setFlowStatus] = useState("");
-  const [isLoading, setIsLoading] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [flowId, setFlowId] = useState("")
   useEffect(() => {
     setFlowId(localStorage.getItem('DEMO_TRANSFER_FLOW') as string)
