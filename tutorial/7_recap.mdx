@@ -1,0 +1,130 @@
+---
+title: Recap (Optional)
+prev_page: 5_wrapping-up
+next_page: 1_integration
+---
+
+{/* Hey Daniel, this page is optional! It was originally the intro, but let us know what you think about including any of this info. */}
+
+Welcome to the Figment Staking API Demo App!
+
+The purpose of this tutorial is to show you how easy it can be to integrate with Figment's Universal Staking API. 
+Going forward, we'll simply refer to this as the **Staking API**.
+
+## Glossary
+
+Let's begin by covering a few important terms that you may not be familiar with:
+
+- **Networks** and **Blockchains** &mdash; These terms are sometimes used interchangeably, meaning that blockchains are peer to peer networks. Sometimes "network" is used to mean a mainnet or a testnet.
+
+- **Mainnet** and **Testnet** &mdash; Many blockchains operate testnets, which helps developers to rigorously test their products before moving into production on the main network or "mainnet".
+
+- **NEAR** &mdash; The NEAR Protocol is a Proof of Stake blockchain. It uses the NEAR token as its native token, which enables users to pay transaction fees and to transfer value.
+
+- **Token Faucet** &mdash; When using a testnet, it is usually necessary to access a token faucet to acquire testnet tokens. NEAR was chosen for this demonstration as all NEAR testnet accounts are automatically provided with 200 NEAR tokens, removing the need to use a token faucet.
+
+- **Delegator** &mdash; This is you. Or, perhaps more importantly, an individual. An entity who is delegating (also known as "staking") tokens to a validator.
+
+- **Validator** &mdash; A participant in the consensus of the Proof of Stake (also known as "PoS") network.
+
+- **Transaction** &mdash; An action on the network involving multiple parties. Examples include transfer of tokens, staking tokens, smart contract interactions and more.
+
+- **Signature** &mdash; A cryptographic proof that the owner of a private key (a user on the network) signed a message or transaction. This is similar to signing a physical cheque or contract.
+
+- **Address** &mdash; This identifies a user on the network. On some networks, this is also the public key of a cryptographic keypair (a private key and a public key form a keypair). In the case of NEAR, a human readable address can also be used.
+
+## Prerequisites
+
+To complete this tutorial, you will need the following:
+
+- <Link href="https://git-scm.org" rel="noopener noreferrer" target="_blank">git</Link> &mdash; If you're cloning the code repository from GitHub, you might also use <Link href="https://gitpod.io" rel="noopener noreferrer" target="_blank">GitPod</Link>.
+- <Link href="https://nodejs.org/en/download/" rel="noopener noreferrer" target="_blank">Node.js</Link> &mdash; v14 is the minimum version required to run Next.js
+- A code editor, we recommend <Link href="https://code.visualstudio.com" rel="noopener noreferrer" target="_blank">Visual Studio Code</Link>
+- Working knowledge of <Link href="https://www.javascript.com" rel="noopener noreferrer" target="_blank">JavaScript</Link> / <Link href="https://www.typescriptlang.org" rel="noopener noreferrer" target="_blank">TypeScript</Link> &mdash; TS has a minimal impact on the code scaffolded by Next.js and does not interfere with, nor is it required by the Figment Staking API.
+
+
+## Demo App Structure
+
+This Demo App is structured as follows:
+
+- `/components` contains React components specific to each part of a Staking API flow
+
+- `/fonts` contains licensed fonts used by Figment
+
+- `/pages` contains the client-side pages shown by the app (client-side)
+
+- `/pages/api` contains the Next.js API routes used by the app (server-side)
+
+- `/pages/near-delegate`, `/pages/near-undelegate` and `/pages/near-transfer` contain the client-side pages used in each Staking API flow. These will use the components defined in `/components`
+
+- `/pages/tutorial/[doc].tsx` contains the code used to display Markdown (MDX) files for this Demo App Tutorial
+
+- `/pages/create-near-account.tsx` is the page used to create a new, randomly named NEAR account on testnet
+
+- `/public` contains the images used in the Demo App
+
+- `/styles` contains the CSS used to style the Demo App
+
+- `/tutorial` contains the Demo App Tutorial content in Markdown format
+
+- `.env-example` must be renamed to `.env` and should contain the Figment API key used to access the Staking API (do this before running the Demo App)
+
+- `.gitignore` lists files which should be ignored by git &mdash; it's imperative that `.env` always be listed in this file to prevent API keys being leaked
+
+- In addition to the project manifest file `package.json`, the remaining files in the project root directory are used for configuration of TypeScript and Next.js
+
+## Milestones
+
+In the following steps we will describe how to recreate the Delegation flow from this demo app.
+Generally, this will cover how to integrate the Figment Universal Staking API into a full stack application.
+With a little bit of study, you can extrapolate the needed learnings for both frontend and backend from the demo app and this tutorial.
+
+The first milestone is having a working connection with the Staking API. This requires a Figment API key.
+
+The second milestone is being able to complete an entire Staking API delegation flow. This requires some understanding of the Staking API flows.
+
+The final milestone is being able to control the process of working with the Staking API, and store state for existing Staking API flows that you have created.
+
+## Tech Stack
+
+Under the hood, this application is comprised of:
+
+- <Link href="https://nextjs.com" rel="noopener noreferrer" target="_blank">Next.js</Link> &mdash; The project was scaffolded by `npx create-next-app@latest --ts` (see the [docs](https://nextjs.org/docs/basic-features/typescript))
+
+- <Link href="https://typescriptlang.org" rel="noopener noreferrer" target="_blank">TypeScript</Link> &mdash; Type safety and JavaScript. Name a more iconic duo!
+
+- NEAR Protocol's <Link href="https://github.com/near/near-api-js" rel="noopener noreferrer" target="_blank">JavaScript API</Link> &mdash; NEAR is a blockchain with a web focus. Check out [Figment Learn](https://learn.figment.io/protocols/near) for more info about NEAR, including links to further resources.
+
+- Figment's <Link href="https://npmjs.org/figmentio/slate" rel="noopener noreferrer" target="_blank">npm package</Link> &mdash; This code library simplifies the payload decoding and transaction signing process for multiple networks. 
+
+- <Link href="https://github.com/lquixada/cross-fetch" rel="noopener noreferrer" target="_blank">cross-fetch</Link> &mdash; A universal fetch API that works everywhere.
+
+- <Link href="https://github.com/emotion-js/emotion/tree/main#readme" rel="noopener noreferrer" target="_blank">@emotion/react</Link> &mdash; CSS-in-JS for visual styling. Styling is outside the scope of this tutorial, however it is an important consideration for a fullstack application, and there are many different approaches to this topic. 
+
+## Implementation
+
+The focus of this tutorial will be on integrating with the Staking API. This requires that you send and receive data using HTTP requests. 
+The cross-fetch library is what we will use to accomplish this.
+
+When it is necessary to sign a transaction payload using a keypair, we will use the code library `@figmentio/slate` to perform the signing action.
+
+We've provided a page which can generate fresh NEAR testnet accounts with a random alphanumeric identifier. 
+These accounts are meant for use in development, and to rapidly demonstrate the usage of the Staking API.
+
+- Wherever you see the ternary operator (`condition ? true : false`) used in the context of a React page, this is called conditional rendering.
+ 
+  - If the condition evaluates to true, the value after the question mark is returned.
+  
+  - If the condition evaluates to false, the value after the colon is returned.
+
+## Private Keys Disclaimer
+
+The code in `pages/create-near-account.tsx` creates a randomly generated account name, and the private key for this account is kept in the application state of this demo app.
+
+This is _only_ meant to provide a seamless experience for the demo.
+
+In practice, private keys should never be exposed, shared, and especially not stored in browser local storage.
+
+### **The keypairs used in this demo app are for use on the NEAR testnet only!** 
+
+If you have any further questions about keypairs on NEAR, please take a moment to familiarize yourself with the <Link href="https://docs.near.org/concepts/basics/accounts/model" rel="noopener noreferrer" target="_blank">NEAR account model</Link> before proceeding.

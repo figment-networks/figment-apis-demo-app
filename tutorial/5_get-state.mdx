@@ -1,0 +1,13 @@
+---
+title: Get Flow State
+prev_page: 4_broadcasting
+next_page: 6_wrapping-up
+---
+
+To check the flow state manually, send a GET request to the endpoint `https://near-slate.datahub.figment.io/api/v1/[:flow_id]` where `[:flow_id]` is the alphanumeric flow ID.
+
+- While the flow state is `delegate_tx_broadcasting`, the Staking API has sent the transaction including the signed transaction payload to the network and is awaiting confirmation.
+
+- When the state changes to `delegated`, the transaction has been conformed on the blockchain and the delegation flow is complete.
+
+Check the code in `pages/api/near-delegate/get-flow-state.ts` to see the fetch request in action. Remember that GET requests don't need a `Content-Type` header, because there is no request body.

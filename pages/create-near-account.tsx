@@ -34,7 +34,6 @@ export default function CreateNEARAccountPage() {
     })
 
     setTimeout(() => console.log(appState))
-
     setIsLoading(false);
   };
 
@@ -66,7 +65,6 @@ export default function CreateNEARAccountPage() {
           </p>
           <br /> <br />
      
-
         {isLoading ? "Loading..." : ""}
 
         {appState.pubkey ? (<>
