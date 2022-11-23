@@ -4,26 +4,47 @@ Welcome to the Figment Staking API demo app. The goal is to get you up and runni
 
 ## Prerequisites
 
-- Your favorite code editor, we recommend [VSCode](https://code.visualstudio.com)
+- A code editor, such as [VSCode](https://code.visualstudio.com)
 - An up to date version of [git](https://git-scm.com)
-- [Node.js](https://nodejs.org/en/) v14+
-  - We recommend using the `npm` package manager, because it is bundled with Node.js
+- [Node.js](https://nodejs.org/en/) v14+, which is bundled with the `npm` package manager
 
-## Demo App Tutorial
+### Demo App Tutorial
 
-1. Clone this repository with git and change your working directory &rarr; `git clone git@github.com:figment-networks/figment-apis-demo-app.git && cd figment-apis-demo-app`
-2. To start the tutorial, switch to the `tutorial` branch &rarr; `git switch tutorial`
-3. Begin the tutorial by opening `tutorial.md` in your code editor
-4. Following the steps in the tutorial will guide you through the entire process of using the Staking API
-5. When you have completed the tutorial, you can run the demo app by following the steps below
+#### 1. Clone Repo
 
-## Running The Demo App
+`git clone git@github.com/figment-networks/figment-apis-demo-app.git`
 
-1. Install dependencies with npm &rarr; `npm install`
-2. Rename the `.env-example` file to `.env` with the command `mv .env-example .env` &rarr; paste a valid Figment API key and save the `.env` file
-3. With the API key in place, run the Next.js Development server &rarr; `npm run dev`, which will start the demo app on your localhost at [http://localhost:3000](http://localhost:3000)
+#### 2. Enter Directory
 
-Note that the `.env` file is already included in the `.gitignore` file. Once you have added your API key, make sure to keep it safe to avoid exposing it. Check out Figment's [API Key Best Practices](https://docs.figment.io/guides/manage-and-secure-api-keys#api-key-best-practices).
+`cd figment-apis-demo-app`
+
+#### 3. Install dependencies
+
+`npm install`
+
+#### 4. Open Tutorial Branch
+
+`git switch tutorial`
+
+#### 5. Add Figment API Key
+
+`mv .env-example .env` &rarr; Renames the file to `.env`
+
+Paste a valid Figment API key after the variable `API_KEY=`
+
+**Note**: The `.env` file is already included in the `.gitignore` file.
+Once you have added your API key, make sure to keep it safe to avoid exposing it.
+Check out Figment's [API Key Best Practices](https://docs.figment.io/guides/manage-and-secure-api-keys#api-key-best-practices).
+
+#### 6. Get Started
+
+Open `tutorial.md` & follow the steps.
+
+#### 7. Run the Demo App
+
+Ensure you have completed the tutorial and added a Figment API key to `.env` _before_ you run the server.
+
+`npm run dev` &rarr; starts the Next.js Development server at [http://localhost:3000](http://localhost:3000)
 
 ## Private Keys Disclaimer
 
