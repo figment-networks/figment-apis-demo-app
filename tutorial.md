@@ -66,12 +66,10 @@ Since you've checked out the `tutorial` branch of this repository, the "click to
 
 When this button is clicked, we'll need to perform an asynchronous fetch call to the Staking API, passing a valid Figment API key and the parameters needed to begin a new Delegation flow.
 
-In the file `pages/api/delegateFlow.js`, locate the code snippet:
+In the file `pages/api/delegateFlow.js`, locate the fetch request:
 
 ```js
 /**
- * 
- * 
   const response = await fetch(`https://near-slate.datahub.figment.io/api/v1/flows`, {
     method: "POST",
     headers: {
@@ -93,7 +91,7 @@ In the file `pages/api/delegateFlow.js`, locate the code snippet:
 - The fetch request is a POST request containing the necessary headers and a JSON body, being sent to the Staking API endpoint for NEAR: `https://near-slate.datahub.figment.io/api/v1/flows`
 - The JSON body must have the correct parameters. Read more about them in the Figment Docs [here](https://docs.figment.io/guides/staking-api/near/delegate/create-new-flow)
 
-Uncomment this block of code in `pages/api/delagateFlow.js` then save the file.
+Uncomment this block of code in `pages/api/delagateFlow.js` (remove lines 8 and 24), then save the file.
 
 In the file `pages/index.js`, refer to the first fetch request inside the `delegate` function:
 
@@ -110,39 +108,49 @@ In the file `pages/index.js`, refer to the first fetch request inside the `deleg
     });
 ```
 
-Somebody accidentally set the `network_code` to `cosmos`! You'll need to change it to `near` so the correct flow is initialized.
+Somebody accidentally set the `network_code` here to `cosmos`! You'll need to change it to `near` so the flow is initialized for the correct network.
 
 - This POST request is going to be processed by `delegateFlow.js`, passing the parameters `network_code`, `chain_code`, `operation` and `version` to initialize a new flow.
 
-- Provided that you have a valid API key in your `.env` file to access the Staking API, the response to this fetch request will contain the details of the initialized flow which includes the flow `id`, the flow `state`, and the `actions` which can be performed at this stage of the flow.
+- Provided that you have a valid API key in your `.env` file to access the Staking API, the response to this fetch request will contain the details of the initialized flow. This includes the flow `id`, the flow `state`, and the `actions` which can be performed in this part of the flow.
 
 Read more about the specification on the Figment Docs [here](https://docs.figment.io/guides/staking-api/near/delegate/create-new-flow).
 
-In the file `pages/api/getNearBalance.js` we'll query the account's available balance and staked balance using methods from `near-api-js` so that we can display them on the client-side:
+### Balances
+
+In the file `pages/api/getNearBalance.js` we'll query the account's available balance and staked balance using methods from `near-api-js`, so that we can display them on the client-side:
 
 ```js
-import { connect } from 'near-api-js';
-import nearConfig from '../../utilities/nearConfig';
-
 export default async function (req, res) {
     if (!req.query.account) return res.status(406).send('missing account id');
     const client = await connect(nearConfig);
     const account = await client.account(req.query.account);
-    let balance = await account.getAccountBalance();
-    const stake = await account.getActiveDelegatedStakeBalance();
-    balance = { ...balance, ...stake }
-    return res.status(200).json(balance);
+    const balance = await account.getAccountBalance();
+    const staked = await account.getActiveDelegatedStakeBalance();
+    return res.status(200).json({ 
+        available: undefined,
+        staked: undefined 
+    });
 }
 ```
 
+Oops! Somebody left the return values as `undefined`. We'd better fix this by returning a parsed floating point integer.
+
+Replace the `undefined` values on lines 11 and 12 with the following code, then save the file:
+
+```js
+      available: Number.parseFloat(balance.total || 0),
+      staked: Number.parseFloat(staked.total || 0) 
+```
+
+- `getAccountBalance` and `getActiveDelegatedStakeBalance` return balances formatted as BigNumber, which is why they need to be parsed before being displayed on the client-side. The utility functions in `near-api-js` also include methods to parse and format amounts.
+
 ## Step 2: Creating a Delegation Transaction
 
-In the file `pages/api/submitData.js` we'll perform another fetch request to the Staking API with the inputs coming from the client-side. Keep in mind that when continuing with a flow, we need to use a PUT request, not a POST request.
+In the file `pages/api/submitData.js` we'll perform another fetch request to the Staking API with the inputs coming from the client-side. Keep in mind that continuing a flow with the `/next` endpoint uses a PUT request, not a POST request.
 
 ```js
 /**
- * 
- * 
     const response = await fetch(`https://near-slate.datahub.figment.io/api/v1/flows/${flow_id}/next`, {
       method: "PUT",
       headers: {
@@ -154,7 +162,7 @@ In the file `pages/api/submitData.js` we'll perform another fetch request to the
 */
 ```
 
-Still working within the `delegate` function in `pages/index.js`, we can see which `inputs` are required from the [Staking API response](https://docs.figment.io/guides/staking-api/near/delegate/create-new-flow#sample-response). We'll use these to create our client-side fetch request:
+Still working within the `delegate` function in `pages/index.js`. We can see which `inputs` we need to submit in the [Staking API response](https://docs.figment.io/guides/staking-api/near/delegate/create-new-flow#sample-response). We'll use these to create our client-side fetch request:
 
 ```js
     response = await fetch("/api/submitData", {
@@ -176,53 +184,41 @@ Still working within the `delegate` function in `pages/index.js`, we can see whi
 - Keep using the same `flow_id` until the flow is completed
 - The `name` field is the name of the action we're taking &mdash; `create_delegate_tx`
 - The `inputs` are: `delegator_address`, `delegator_pubkey`, `validator_address`, and `amount`
-- There is also an optional `max_gas` parameter which we have intentionally left out. You can try adding it in if you want!
+- There is also an optional `max_gas` parameter which we've omitted. You can try adding it in, if you want! Check the [parameters](https://docs.figment.io/guides/staking-api/near/delegate/submit-delegate-data#parameters) on the Figment Docs for more information.
 
 ## Step 3: Signing the Transaction
 
-The unsigned transaction payload is returned in the response from the Staking API once you have submitted the delegation data. It is good practice to decode the payload to make sure you're signing the correct transaction. Don't blindly sign payloads.
+Once you have submitted the delegation data, the unsigned transaction payload is returned in the response from the Staking API. It is good practice to decode the payload with `@figmentio/slate` and cross check with your inputs to make sure you're signing the correct transaction. Feel free to add this improvement later, but for now let's focus on signing the payload:
 
 The unsigned transaction payload appears in two locations in the response:
 
 - In the `actions`, under the `inputs` array of the action `sign_delegate_tx` as `transaction_payload`
-- Also in the `data` object, as the `raw` property of the `delegate_transaction` object.
+- Also in the `data` object, as the `raw` property of the `delegate_transaction` object
 
-Note that the `signing_payload` is only used when perfoming the signing with a custodial solution such as Fireblocks. Refer to our guide on [Signing Transactions with the Fireblocks API](https://docs.figment.io/guides/staking-api/fireblocks-signing-transactions) for more information.
+**Note**: The `signing_payload` is a hashed representation of the transaction payload and is only used when signing with a custodial solution such as the Fireblocks API.
 
-In this example, we're getting the unsigned payload from the `raw` property:
-
-```js
-/**
- * 
- * 
-const transaction_payload = json.data.delegate_transaction.raw;
-*/
-```
-
-The payload can be signed using the npm package `@figmentio/slate`, which abstracts some of the cumbersome details of the signing process when using specific client libraries like `near-api-js`.
-
-The `sign` method takes four parameters and, when necessary, an options object as a fifth parameter. NEAR does not require any extra options, so we're not passing any here. Networks like Cosmos and Polkadot require extra options to be passed when signing payloads, this may be covered in a future version of this tutorial.
-
-The transaction payload signing is happening in the `delegate` function inside of `pages/index.js`:
+In this example, we're getting the unsigned transaction payload from the `raw` property. Locate this commented code on line 69 of `pages/index.js`, uncomment it and save the file:
 
 ```js
-/**
- * 
- * 
-const signed_payload = await slate.sign("near", "v1", transaction_payload, [secretKey]);
-*/
+// const transaction_payload = json.data.delegate_transaction.raw;
 ```
+
+The payload is then passed to the `sign` method of the npm package `@figmentio/slate`, which abstracts some of the signing process for networks supported by the Staking API. You might also use a network-specific client library for signatures, such as `near-api-js` - but under the hood this is precisely what the slate package is doing. Keep it DRY!
+
+The `sign` method takes four parameters: The `network`, the API `version`, the unsigned transaction payload, and an array of private keys used to sign the transaction.
+
+When necessary, an options object can be passed as a fifth parameter. NEAR does not require any extra options for signing, so we're not passing it as a parameter here. Networks such as Cosmos and Polkadot require options to be passed when signing.
 
 ## Step 4: Broadcasting the Transaction
 
-The signed transaction payload must now be broadcast to the network by the Staking API.
+Finally, the signed transaction payload can be broadcast to the network by the Staking API.
 
-To send the signed payload, we'll perform another fetch request and pass the `name` of the action we're performing and the `inputs`, which will include the `transaction_payload`. Uncomment the fetch request in `pages/api/broadcastTx.js:
+To send the signed payload, we'll perform another fetch request and pass the `name` of the action we're performing (`sign_delegate_tx`) and the `inputs`, which must include the `transaction_payload`. 
+
+Uncomment the fetch request in `pages/api/broadcastTx.js` (remove lines 8 and 22) then save the file:
 
 ```js
 /**
- * 
- * 
     const response = await fetch(`https://near-slate.datahub.figment.io/api/v1/flows/${flow_id}/next`, {
       method: 'PUT',
       headers: {
@@ -239,41 +235,42 @@ To send the signed payload, we'll perform another fetch request and pass the `na
 */
 ```
 
-When the signed payload has been broadcast to the network, the flow state will update to `delegate_tx_broadcast`. While the flow is in this state, the transaction is awaiting confirmation on the blockchain.
+When the signed payload has been broadcast to the network, the Staking API's response will indicate the new flow state `delegate_tx_broadcast`. While the flow is in this state, the transaction has been broadcast to the network and is awaiting confirmation on the blockchain.
 
 ## Step 5: Flow State
 
-Since the transaction will not take long to confirm, we can check the flow state manually by polling every 2.5 seconds with `setTimeout`. We want to know when the flow state becomes `delegated` and then update our available balance and staked balance:
+Since the transaction will not take long to confirm, we can check the flow state manually. We simply want to know when the flow state becomes `delegated`, then update our available balance and staked balance on the client-side. We can perform a GET request to the Staking API endpoint to get the curent status of the flow, using its flow ID.
+
+In the file `pages/api/getFlowState.js`, uncomment the fetch request (remove lines 7 and 14) then save the file:
 
 ```js
 /**
- * 
- * 
-  async function monitorTx() {
-    const response = await fetch(`/api/getFlowState?flow_id=${pendingTx}`);
-    if (!response.ok) alert('yo');
-    const json = await response.json();
-    if (json.state === 'delegated') {
-      setPendingTx(null);
-      updateBalances();
-    } else {
-      setTimeout(monitorTx, 2500);
-    }
-  }
+    const response = await fetch(`https://near-slate.datahub.figment.io/api/v1/flows/${flow_id}`, {
+        method: "GET",
+        headers: {
+            Authorization: process.env.API_KEY,
+        }
+    });
 */
 ```
 
-For more complex implementations, we might want to create a webhook to send a notification when the state changes from `delegate_tx_broadcasting` to `delegated`. This method is slightly more complex and requires us to verify the webhook payloads, so we won't cover it in this tutorial.
+Also, in `pages/index.js`, locate the `waitForDelegation` function, uncomment the fetch request on line 122 and save the file:
+
+```js
+    // const result = await fetch(`/api/getFlowState?flow_id=${transaction}`);
+```
+
+**Note**: For more complex implementations, we might create a webhook to send a notification when the state changes from `delegate_tx_broadcasting` to `delegated`. This method is slightly more complex and requires us to verify the webhook payloads, so we won't cover it in this tutorial.
 
 ## Tutorial Complete
 
 Congratulations, you've successfully completed the code to integrate the Figment Staking API into a full stack application!
 
-You can now run the demo app by starting the Next.js Development Server with the terminal command `npm run dev` and visiting `https://localhost:3000` in your web browser.
+You can now run the demo app by starting the Next.js Development Server with the terminal command `npm run dev` and visiting `https://localhost:3000` in your web browser. Try creating an account, and staking some of your testnet NEAR tokens in real time with a single click!
 
-Everything should function the same as it does on the `main` branch of the repository.
+If you have not already, please take some time to review the code in `pages/api` and `pages/index.js` to understand the interactions between client-side and server-side. Since you've cloned this repository to your local machine, feel free to experiment further.
 
-Since you've cloned the repo to your local machine, feel free to experiment further. We hope you enjoyed this tutorial, and we can't wait to see how you integrate Figment APIs into your use case.
+We hope you enjoyed this tutorial, and we can't wait to see how you integrate Figment APIs into your use case!
 
 ## Further Reading
 

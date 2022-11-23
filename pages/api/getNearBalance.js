@@ -8,7 +8,7 @@ export default async function (req, res) {
     const balance = await account.getAccountBalance();
     const staked = await account.getActiveDelegatedStakeBalance();
     return res.status(200).json({ 
-        available: Number.parseFloat(balance.total || 0),
-        staked: Number.parseFloat(staked.total || 0) 
+        available: undefined,
+        staked: undefined
     });
 }

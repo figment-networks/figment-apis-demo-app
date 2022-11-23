@@ -68,6 +68,6 @@ export default function AccountCard({ loaded, accountId, publicKey, available, s
             ) : (
                 <h3>Create new account to get started</h3>
             )}
-        </section >
+        </section>
     )
 }

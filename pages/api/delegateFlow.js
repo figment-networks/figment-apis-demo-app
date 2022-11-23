@@ -1,4 +1,3 @@
-
 export default async function delegateFlow(req, res) {
   let body = req.body;
 
@@ -6,6 +5,7 @@ export default async function delegateFlow(req, res) {
     throw new Error("Error: Please add a valid Figment API key to .env and try again!")
   }
 
+/**
   const response = await fetch(`https://near-slate.datahub.figment.io/api/v1/flows`, {
     method: "POST",
     headers: {
@@ -21,6 +21,7 @@ export default async function delegateFlow(req, res) {
       },
     }),
   });
+*/
 
   if (!response.ok) {
     return res.status(500).json({ ok: false, message: response.statusText })

@@ -2,6 +2,13 @@
 
 Welcome to the Figment Staking API demo app. The goal is to get you up and running with our Staking API in 30 minutes or less!
 
+## Prerequisites
+
+- Your favorite code editor, we recommend [VSCode](https://code.visualstudio.com)
+- An up to date version of [git](https://git-scm.com)
+- [Node.js](https://nodejs.org/en/) v14+
+  - We recommend using the `npm` package manager, because it is bundled with Node.js
+
 ## Demo App Tutorial
 
 1. Clone this repository with git and change your working directory &rarr; `git clone git@github.com:figment-networks/figment-apis-demo-app.git && cd figment-apis-demo-app`
@@ -20,7 +27,7 @@ Note that the `.env` file is already included in the `.gitignore` file. Once you
 
 ## Private Keys Disclaimer
 
-The code in `pages/api/createAccount.js` creates a randomly generated account. The private key for this account is kept in the local storage of your web browser when running the demo. While this facilitates the demo experience, it's not a secure pattern for production-grade apps.
+The code in `pages/api/createAccount.js` creates a randomly generated account ID and keypair. The private key for this account is kept in the local storage of your web browser when running the demo. While this facilitates the demo experience, it's not a secure pattern for production-grade apps.
 
 **The keypairs used in this demo app are for use on the NEAR testnet only!**
 

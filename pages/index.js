@@ -38,7 +38,7 @@ export default function Home() {
       headers: { "Content-Type": "application/json" },
       method: "POST",
       body: JSON.stringify({
-        network_code: "near",
+        network_code: "cosmos",
         chain_code: "testnet",
         operation: "staking",
         version: "v1"
@@ -66,7 +66,7 @@ export default function Home() {
     if (!response.ok) alert('yo')
 
     const { data } = await response.json();
-    const transaction_payload = data.delegate_transaction.raw;
+    // const transaction_payload = data.delegate_transaction.raw;
     const signed_payload = await slate.sign("near", "v1", transaction_payload, [secretKey]);
 
     response = await fetch('/api/broadcastTx', {
@@ -108,7 +108,7 @@ export default function Home() {
   }
 
   /**
-   * get the state of a flow
+   * checks the state of a flow
    *  - when the transaction has been broadcast and is awaiting conformation the state is "delegate_tx_broadcast"
    *  - when the transaction is confirmed on-chain the state becomes "delegated"
    */
@@ -119,8 +119,7 @@ export default function Home() {
       waitForDelegation(transaction, resolve)
     })
 
-    // comment this - check the current status if delegated finish waiting by resolving the promise
-    const result = await fetch(`/api/getFlowState?flow_id=${transaction}`);
+    // const result = await fetch(`/api/getFlowState?flow_id=${transaction}`);
     if (!result.ok) alert('error');
     const { state } = await result.json();
     if (state === 'delegated') return resolve();
