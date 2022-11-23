@@ -12,7 +12,7 @@ Welcome to the Figment Staking API demo app. The goal is to get you up and runni
 
 #### 1. Clone Repo
 
-`git clone git@github.com/figment-networks/figment-apis-demo-app.git`
+`git clone git@github.com:figment-networks/figment-apis-demo-app.git`
 
 #### 2. Enter Directory
 
