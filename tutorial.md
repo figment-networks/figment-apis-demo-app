@@ -1,7 +1,5 @@
 # Integrating with the Staking API
 
-...
-
 ## Flows
 
 The Figment Staking API works with the concept of a flow, a specific set of actions to be completed. More information is available in the [Staking API Overview](https://docs.figment.io/guides/staking-api/) On the Figment Docs.
