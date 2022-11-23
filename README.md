@@ -40,6 +40,8 @@ Check out Figment's [API Key Best Practices](https://docs.figment.io/guides/mana
 
 Open `tutorial.md` & follow the steps.
 
+You can also view the tutorial on GitHub [here](https://github.com/figment-networks/figment-apis-demo-app/blob/tutorial/tutorial.md)
+
 #### 7. Run the Demo App
 
 Ensure you have completed the tutorial and added a Figment API key to `.env` _before_ you run the server.
