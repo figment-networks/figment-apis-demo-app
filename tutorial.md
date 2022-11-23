@@ -94,7 +94,7 @@ In the file `pages/index.js`, refer to the first fetch request inside the `deleg
     });
 ```
 
-Somebody accidentally set the `network_code` to `cosmos`! You'll need to change it to `near` so the correct flow is initialized.
+Somebody accidentally set the `network_code` to `cosmos`! You'll need to change it to `near` on line 51 so the correct flow is initialized.
 
 - This POST request is going to be processed by `delegateFlow.js`, passing the parameters `network_code`, `chain_code`, `operation` and `version` to initialize a new flow.
 
