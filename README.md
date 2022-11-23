@@ -4,7 +4,7 @@ Welcome to the Figment Staking API demo app. The goal is to get you up and runni
 
 ## Demo App Tutorial
 
-1. Clone this repository with git and change your working directory &rarr; `git clone git@github.com/figment-networks/figment-apis-demo-app.git && cd figment-apis-demo-app`
+1. Clone this repository with git and change your working directory &rarr; `git clone git@github.com:figment-networks/figment-apis-demo-app.git && cd figment-apis-demo-app`
 2. To start the tutorial, switch to the `tutorial` branch &rarr; `git switch tutorial`
 3. Begin the tutorial by opening `tutorial.md` in your code editor
 4. Following the steps in the tutorial will guide you through the entire process of using the Staking API
