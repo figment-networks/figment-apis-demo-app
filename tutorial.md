@@ -14,7 +14,7 @@ This Staking API flow has multiple steps, which include:
 2. Submitting details for the transaction. The Staking API creates a transaction payload which needs to be signed. This payload includes details like the address from which tokens will be delegated and its public key, the validator address to which the tokens will be delegated, and an amount of tokens to delegate
 3. Confirming the transaction details and signing the transaction payload
 4. Broadcasting the signed transaction to the network
-5. Confirming that the flow state has changed to `delegated`, indicating that the flow is complete and the delegated tokens are actively earning staking rewards
+5. Confirming that the flow state has changed to `delegated`, meaning that the flow is complete and the delegated tokens are actively earning staking rewards
 
 ## Testnet account
 
