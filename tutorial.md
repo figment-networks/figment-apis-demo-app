@@ -179,7 +179,7 @@ The Staking API response will include an unsigned transaction payload, after you
 
 **Note**: The `signing_payload` is only used when signing with a custodial solution such as the Fireblocks API. Refer to our guide on [Signing Transactions with the Fireblocks API](https://docs.figment.io/guides/staking-api/fireblocks-signing-transactions) for more information.
 
-To get the unsigned transaction payload from the `raw` property of `delegate_transaction`, locate this code on line 69 of `pages/index.js`, uncomment it then save the file:
+To get the unsigned transaction payload from the `raw` property of `delegate_transaction`, locate this code on line 83 of `pages/index.js`, uncomment it then save the file:
 
 ```js
 // const transaction_payload = json.data.delegate_transaction.raw;
