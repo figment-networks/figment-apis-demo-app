@@ -5,6 +5,7 @@ export default async function broadCastTx(req, res) {
         return res.status(406).send('missing params');
     }
 
+/**
     const response = await fetch(`https://near-slate.datahub.figment.io/api/v1/flows/${flow_id}/next`, {
       method: 'PUT',
       headers: {
@@ -18,6 +19,7 @@ export default async function broadCastTx(req, res) {
         }
       })
     });
+*/
 
     if (!response.ok) {
         return res.status(406).send({ ok: false, message: response.statusText });

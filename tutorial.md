@@ -58,7 +58,7 @@ Let's begin the process of completing the demo app code so that it functions pro
 
 To get started, open the files `pages/index.js` and `pages/api/delegateFlow.js` in your code editor.
 
-You will need to complete the code in these files. Do so by uncommenting fetch requests and fixing relevant lines, then saving the files to continue to the next step of the tutorial.
+You will need to complete the code in these files. Do so by uncommenting fetch requests and fixing relevant lines of code as instructed, then saving the files before continuing to the next step of the tutorial.
 
 In `pages/index.js`, we've provided an input for the amount and a "STAKE" button. When the user wants to stake, they can input a number of tokens and click the button to initiate the staking process.
 
