@@ -1,0 +1,125 @@
+@font-face {
+  font-family: "Jungka";
+  font-weight: normal;
+  src: url("../fonts/Jungka/Jungka-Book.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "Jungka";
+  font-weight: bold;
+  src: url("../fonts/Jungka/Jungka-Medium.otf") format("opentype");
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: Jungka, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    color: white;
+    background: black;
+  }
+}
+
+html,
+body {
+  height: 100%;
+}
+
+#__next {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+main {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button {
+  background-color: #034d76;
+  color: white;
+  border: 0;
+  padding: 11px 12px;
+  line-height: 1;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button:hover {
+  background-color: rgb(1, 98, 150);
+}
+
+button:active {
+  background-color: #004469;
+}
+
+button:disabled {
+  background-color: #aaaaaa;
+}
+
+input {
+  padding: 8px 12px;
+  line-height: 1;
+  font-size: 16px;
+}
+
+.spinner-icon {
+  display: inline-block;
+  position: relative;
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+}
+.spinner-icon div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  margin: 1px;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  animation: spinner-icon 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #fff transparent transparent transparent;
+}
+.spinner-icon div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.spinner-icon div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.spinner-icon div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes spinner-icon {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
