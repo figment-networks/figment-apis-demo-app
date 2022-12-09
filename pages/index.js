@@ -93,9 +93,10 @@ export default function Home() {
       throw new Error("/submitData code not completed or bad payload data");
     }
 
+
     // sign the transaction
     const { data } = await response.json();
-    const transaction_payload = data.delegate_transaction.raw;
+    // const transaction_payload = data.delegate_transaction.raw;
 
     if (!transaction_payload) {
       throw new Error("transaction_payload is not defined!");

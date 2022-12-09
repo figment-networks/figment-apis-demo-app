@@ -5,6 +5,7 @@ export default async function submitData(req, res) {
     return res.status(406).send("missing flow id");
   }
 
+  /**
   const response = await fetch(
     `https://near-slate.datahub.figment.io/api/v1/flows/${flow_id}/next`,
     {
@@ -16,6 +17,7 @@ export default async function submitData(req, res) {
       body: JSON.stringify(body),
     }
   );
+   */
 
   if (!response.ok) {
     return res.status(500).send({ ok: false, message: response.statusText });

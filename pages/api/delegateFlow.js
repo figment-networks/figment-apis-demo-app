@@ -7,6 +7,7 @@ export default async function delegateFlow(req, res) {
     );
   }
 
+  /**
   const response = await fetch(
     `https://near-slate.datahub.figment.io/api/v1/flows`,
     {
@@ -25,6 +26,7 @@ export default async function delegateFlow(req, res) {
       }),
     }
   );
+   */
 
   if (!response.ok) {
     return res.status(500).json({ ok: false, message: response.statusText });
