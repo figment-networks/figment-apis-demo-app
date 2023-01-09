@@ -1,7 +1,7 @@
 import cache from "memory-cache"
 
 async function subscribe(req, res) {
-  const result = await fetch('https://near-slate.datahub.figment.io/api/v1/webhook_endpoints', {
+  const result = await fetch('https://eth-slate.datahub.figment.io/api/v1/webhook_endpoints', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

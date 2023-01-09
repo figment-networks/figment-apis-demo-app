@@ -8,7 +8,7 @@ export default async function delegateFlow(req, res) {
     }
   
     const response = await fetch(
-      `https://near-slate.datahub.figment.io/api/v1/flows`,
+      `https://eth-slate.datahub.figment.io/api/v1/flows`,
       {
         method: "POST",
         headers: {
