@@ -40,7 +40,7 @@ export default function AccountCard({
   const [waiting, setWaiting] = useState(delegating);
 
   // Leave this set to true until instructed to change it in Step 7
-  const disabled = true;
+  const disabled = false;
   // const disabled = waiting || delegating
 
   return (
