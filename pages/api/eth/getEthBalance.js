@@ -3,7 +3,7 @@
 const { ethers, utils } = require("ethers");
 
 async function getEthBalance() {
-    const provider = new ethers.providers.JsonRpcProvider("https://eth-mainnet.g.alchemy.com/v2/HazH9PhOY6iI8e9mCeJPCKP6fkQT2NzI");
+    const provider = new ethers.providers.JsonRpcProvider(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`);
 
     const signer = provider.getSigner()
     
