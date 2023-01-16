@@ -29,10 +29,11 @@ const styles = css`
 
 export default function AccountCard({
   loaded,
-  accountId,
+  accountAddress,
   publicKey,
   available,
   staked,
+  latestBlock,
   onDelegate,
   delegating,
 }) {
@@ -48,16 +49,16 @@ export default function AccountCard({
       <style jsx>{styles}</style>
       {!loaded ? (
         <h3>Checking for local account...</h3>
-      ) : accountId ? (
+      ) : accountAddress ? (
         <>
           <h3>Account ID</h3>
           <p>
             <Link
               target="_blank"
               rel="noopener noreferrer"
-              href={`https://explorer.testnet.near.org/accounts/${accountId}`}
+              href={`https://goerli.etherscan.io/address/${accountAddress}`}
             >
-              {accountId}
+              {accountAddress}
             </Link>
           </p>
           <h3>Public Key</h3>
@@ -70,10 +71,11 @@ export default function AccountCard({
             </>
           ) : (
             <>
-              <p>Available: {available} Ⓝ</p>
-              <p>Staked: {staked} Ⓝ</p>
+              <p>Available: {available} ⟠</p>
+              <p>Staked: {staked} ⟠</p>
             </>
           )}
+          <h3>Goerli Blockheight: <code>{latestBlock}</code> </h3>
           <form
             onSubmit={async (event) => {
               event.preventDefault();

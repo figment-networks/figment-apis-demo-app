@@ -6,37 +6,38 @@ import Header from "../components/Header";
 import { DECIMALS } from "../utilities/nearConfig";
 import slate from "@figmentio/slate";
 import AccountCard from "../components/AccountCard";
+import { ethers, utils } from "ethers";
 
 export default function Home() {
   const [ delegating, setDelegating ] = useState(false);
   const { appState, setAppState, clearAppState } = useAppState();
-  const { loaded, accountId, publicKey, secretKey, available, staked } =
+  const { loaded, accountAddress, publicKey, privateKey, available, staked, latestBlock } =
     appState;
 
   /**
    * createAccount
    * @description creates a new near protocol account
-   * @modifies {object} appState - sets the accountId, publickey, secretKey for the new account
+   * @modifies {object} appState - sets the accountAddress, publickey, privateKey for the new account
    * @throws {Response} throws response object if the createAccount request fails
    */
   async function createAccount() {
     // create account
-    const response = await fetch("/api/createAccount", {
+    const response = await fetch("/api/eth/createEthAccount", {
       headers: { "Content-Type": "application/json" },
       method: "POST",
     });
 
     if (!response.ok) throw new Error(response);
 
-    // update the app state with the accountId and keypair
-    const { accountId, publicKey, secretKey } = await response.json();
-    setAppState({ accountId, publicKey, secretKey });
+    // update the app state with the accountAddress and keypair
+    const { publicKey, privateKey, accountAddress } = await response.json();
+    setAppState({ publicKey, privateKey, accountAddress });
   }
 
   /**
    * delegate
    * @description delegates a given amount of tokens to a node for staking
-   * @param {float} amount - the amount of NEAR to be staked
+   * @param {float} amount - the amount of ETH to be staked
    * @callback updateBalances - runs after broadcasted tx is delegated updating appState.available && appState.staked
    * @modifies {object} appState - updates the available && staked balances via updateBalances
    * @throws {Response} throws response object if the delegateFlow, submitData or broadcastTx requests fails
@@ -46,12 +47,12 @@ export default function Home() {
     let signed_payload;
 
     // create the flow
-    response = await fetch("/api/delegateFlow", {
+    response = await fetch("/api/eth/delegateFlow", {
       headers: { "Content-Type": "application/json" },
       method: "POST",
       body: JSON.stringify({
-        network_code: "near",
-        chain_code: "testnet",
+        network_code: "ethereum",
+        chain_code: "goerli",
         operation: "staking",
         version: "v1",
       }),
@@ -70,21 +71,20 @@ export default function Home() {
     // get the name to describe the action when submitting data
     const { name } = actions[0];
 
-    // a list of validators can be found at https://explorer.testnet.near.org/nodes/validators
-    const validator_address = "legends.pool.f863973.m0";
+    // a validator address must be provided by Figment
+    const validator_address = "TBD";
 
-    response = await fetch("/api/submitData", {
+    response = await fetch("/api/eth/submitData", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         flow_id,
-        name: name,
+        name: name, // create_deposit_tx
         inputs: {
-          delegator_address: appState.accountId,
-          delegator_pubkey: appState.publicKey,
-          validator_address: validator_address,
-          amount,
-          max_gas: null,
+          funding_account_address: appState.accountAddress,
+          validator_pub_key: appState.publicKey,
+          withdrawal_credentials: validator_address,
+          signature: appState.depositSignature,
         },
       }),
     });
@@ -100,8 +100,8 @@ export default function Home() {
     if (!transaction_payload) {
       throw new Error("transaction_payload is not defined!");
     } else {
-      signed_payload = await slate.sign("near", "v1", transaction_payload, [
-        secretKey,
+      signed_payload = await slate.sign("ethereum", "v1", transaction_payload, [
+        privateKey,
       ]);
     }
 
@@ -112,7 +112,7 @@ export default function Home() {
     eventSource.onmessage = (msg) => {
       const { state, message } = JSON.parse(msg.data)
       console.log(message)
-      if (state === 'delegated') {
+      if (state === 'deposited') {
         updateBalances()
         setDelegating(false)
         eventSource.close()
@@ -138,21 +138,25 @@ export default function Home() {
    * updateBalances
    * @description updates the available and staked balances in the appState
    * @modifies {object} appState - updates staked and available properties with current balances
-   * @throws {Response} throws response object if the getNearBalance request fails
+   * @throws {Response} throws response object if the getEthBalance request fails
    */
   async function updateBalances() {
-    if (!accountId) return;
-    const response = await fetch("/api/getNearBalance?account=" + accountId);
+    if (!accountAddress) return;
+    const response = await fetch("/api/eth/getEthBalance?accountAddress=" + accountAddress);
     
     if (!response.ok) {
       throw new Error(response.statusText);
     }
 
-    const { available, staked } = await response.json();
+    const { available, staked, latestBlock } = await response.json();
+
+    console.log("Available / Staked: ", available, staked)
+    console.log("Latest ETH block number: ", latestBlock)
 
     const update = {
-      available: parseFloat((parseFloat(available) / DECIMALS).toFixed()),
-      staked: parseFloat((parseFloat(staked) / DECIMALS).toFixed()),
+      available,
+      staked,
+      latestBlock,
     };
 
     setAppState({
@@ -164,17 +168,17 @@ export default function Home() {
   // on initial load update the balance
   const [ started, setStarted ] = useState(false)
   useEffect(() => {
-    if (loaded && accountId) updateBalances();
+    if (loaded && accountAddress) updateBalances();
     if (started) return;
     setStarted(true);
-  }, [loaded, accountId]);
+  }, [loaded, accountAddress]);
 
   // these components are defined in the /components directory
   return (
     <>
       <MetaData />
       <Header
-        accountId={accountId}
+        accountAddress={accountAddress}
         loaded={loaded}
         onLogout={clearAppState}
         onCreate={createAccount}
@@ -182,10 +186,11 @@ export default function Home() {
       <main>
         <AccountCard
           loaded={loaded}
-          accountId={accountId}
+          accountAddress={accountAddress}
           publicKey={publicKey}
           available={available}
           staked={staked}
+          latestBlock={latestBlock}
           onDelegate={delegate}
           delegating={delegating}
         />

@@ -1,20 +1,32 @@
-// TODO: Implement ETH balance checking
+// TODO: Implement staked ETH balance checking
 
 const { ethers, utils } = require("ethers");
 
-async function getEthBalance() {
-    const provider = new ethers.providers.JsonRpcProvider(`https://eth-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`);
+export default async function (req, res) {
+    console.log(req.body)
+    try {
+        if (!req.query.accountAddress) return res.status(406).send("missing account address");
 
-    const signer = provider.getSigner()
-    
-    const latestBlock = await provider.getBlockNumber()
-    const listOfAccounts = await provider.listAccounts(signer)
-    
-    console.log(latestBlock, listOfAccounts)
-    
-    const balance = await provider.getBalance("0xbaf6dc2e647aeb6f510f9e318856a1bcd66c5e19") // Randomly chosen ETH mainnet address w/ a balance
-    
-    console.log(utils.formatUnits(balance))
-}
+        const provider = new ethers.providers.JsonRpcProvider(`https://eth-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`);
 
-getEthBalance();
+        const signer = provider.getSigner(process.env.ETH_ADDRESS)
+        
+        const latestBlock = await provider.getBlockNumber()
+        const listOfAccounts = await provider.listAccounts(signer)
+        
+        console.log(listOfAccounts)
+        
+        const balance = await provider.getBalance(process.env.ETH_ADDRESS) // ETH testnet address w/ a 32 ETH balance
+        const staked = 0.0;
+        console.log(utils.formatUnits(balance))
+    
+        return res
+        .status(200)
+        .json({ available: utils.formatUnits(balance), staked, latestBlock });
+
+    } catch(error) {
+      console.log(error)
+      return res.status(500).send(error.message)
+    }
+  }
+  

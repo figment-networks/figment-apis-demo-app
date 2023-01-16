@@ -2,7 +2,7 @@ import cache from "memory-cache"
 import verifySignature from "../../utilities/verifySignature"
 
 async function unsubscribe(webhookId) {
-    const result = await fetch(`https://near-slate.datahub.figment.io/api/v1/webhook_endpoints/${webhookId}`, {
+    const result = await fetch(`https://eth-slate.datahub.figment.io/api/v1/webhook_endpoints/${webhookId}`, {
         method: 'DELETE',
         headers: {
             Authorization: process.env.API_KEY

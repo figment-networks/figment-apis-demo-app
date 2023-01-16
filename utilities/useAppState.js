@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 
 const initialState = {
   loaded: false,
-  accountId: null,
+  accountAddress: null,
   publicKey: null,
-  secretKey: null,
+  privateKey: null,
   available: null,
   staked: null,
+  latestBlock: null,
 };
 
 export default function useAppState() {
@@ -26,10 +27,10 @@ export default function useAppState() {
     const update = { ..._appState, ...data };
     _setAppState(update);
 
-    const { accountId, publicKey, secretKey } = update;
+    const { accountAddress, publicKey, privateKey } = update;
     localStorage.setItem(
       "staking",
-      JSON.stringify({ accountId, publicKey, secretKey })
+      JSON.stringify({ accountAddress, publicKey, privateKey })
     );
   }
 
