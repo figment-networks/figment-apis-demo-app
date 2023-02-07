@@ -1,3 +1,4 @@
+// This localtunnel is used to receive webhook callbacks
 const localtunnel = require('localtunnel');
 const updateDotenv = require('update-dotenv');
 
